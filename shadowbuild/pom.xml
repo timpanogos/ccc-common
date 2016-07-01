@@ -2,18 +2,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<parent>
-		<groupId>com.pslcl.parent</groupId>
-		<artifactId>dependency-management-parent</artifactId>
+		<groupId>com.ccc.parent</groupId>
+    	<artifactId>dependency-management-parent</artifactId>
 		<version>1</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.pslcl.builder</groupId>
-	<artifactId>pslcl</artifactId>
+	<groupId>com.ccc.builder</groupId>
+	<artifactId>root</artifactId>
 	<version>1</version>
 	<packaging>pom</packaging>
-	<name>PSLCL Builder</name>
+	<name>CCC root most builder</name>
 	<modules>
-		<module>testing-framework</module>
-		<module>developer</module>
+		<module>ccc-common</module>
+		<module>crestj</module>
+		<module>eveapi</module>
 	</modules>
 </project>
+

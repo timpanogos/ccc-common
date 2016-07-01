@@ -6,12 +6,14 @@ goto error
 
 :deploy
 :install
-call mvn %1 pom.xml 
-call mvn %1 -fthird-parties\pom.xml 
-call mvn %1 -fthird-parties\bundled-projects\pom.xml 
-call mvn %1 -fthird-parties\bundled-projects\dependency-management\pom.xml 
+call mvn %1 clean 
+cd third-parties
+call mvn %1 clean 
+cd 	dependency-management
+call mvn %1 clean 
+goto exit
 
 :error
-echo "buildTree [install | deploy]"
+echo "buildParents [install | deploy]"
 
 :exit
