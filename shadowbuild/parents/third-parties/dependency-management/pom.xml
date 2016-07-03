@@ -20,22 +20,29 @@
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
-		        <groupId>com.ccc.crestj</groupId>
-            	<artifactId>crestj-da</artifactId>
+		        <groupId>com.ccc.crest</groupId>
+            	<artifactId>nee-d</artifactId>
 		        <version>1.0</version>
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
-		        <groupId>com.ccc.crestj</groupId>
-            	<artifactId>crestj-pg-da</artifactId>
+		        <groupId>com.ccc.crest</groupId>
+            	<artifactId>crest-da</artifactId>
 		        <version>1.0</version>
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
-		        <groupId>com.ccc.crestj</groupId>
-            	<artifactId>crestj-servlet</artifactId>
+		        <groupId>com.ccc.crest</groupId>
+            	<artifactId>crest-pg-da</artifactId>
+		        <version>1.0</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+		        <groupId>com.ccc.crest</groupId>
+            	<artifactId>crest-servlet</artifactId>
 		        <version>1.0</version>
 				<type>jar</type>
 				<scope>compile</scope>

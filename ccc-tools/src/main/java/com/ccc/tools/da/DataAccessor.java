@@ -13,10 +13,16 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.tools.app.swing;
+package com.ccc.tools.da;
 
 @SuppressWarnings("javadoc")
-public interface Refreshable
+public interface DataAccessor
 {
-    public void refresh();
+    public static String DataSourceTomcatKey = "ccc.tools.da.datasource.tomcat"; 
+    public static String DaImplKey = "ccc.tools.da.impl-class"; 
+    public static String DaUserKey = "ccc.tools.da.user"; 
+    public static String DaPassKey = "ccc.tools.da.password"; 
+    public static String DaHostKey = "ccc.tools.da.host"; 
+    public static String DaPortKey = "ccc.tools.da.port"; 
+    public static String DaDbNameKey = "ccc.tools.da.db-name"; 
 }

@@ -13,10 +13,13 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.tools.app.swing;
+package com.ccc.tools.servlet;
+
+import java.util.Properties;
 
 @SuppressWarnings("javadoc")
-public interface Refreshable
+public interface CoreController
 {
-    public void refresh();
+    public void init(Properties properties) throws Exception;
+    public void destroy();
 }
