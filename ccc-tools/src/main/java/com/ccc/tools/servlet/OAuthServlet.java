@@ -50,10 +50,16 @@ public abstract class OAuthServlet extends AuthenticatedWebApplication
     protected volatile String contextPath;
     protected volatile OAuthUserAuthenticator authenticator;
     protected volatile CoreController coreController;
+    protected volatile Properties properties;
     
     public OAuthServlet()
     {
         log = LoggerFactory.getLogger(getClass());
+    }
+    
+    public Properties getFileProperties()
+    {
+        return properties;
     }
 
     public BaseClientInformation getClientInformation()
@@ -95,7 +101,7 @@ public abstract class OAuthServlet extends AuthenticatedWebApplication
         int idx = fileName.lastIndexOf(".");
         System.setProperty(LogFileBaseKey, fileName.substring(0, idx));
         
-        Properties properties = new Properties();
+        properties = new Properties();
         String msg = "configuration properties file not found: " + fileName;
         try
         {
