@@ -171,6 +171,16 @@ public class StrH
         return value;
     }
     
+    public static String insureLeadingSeparator(String value, char separator)
+    {
+        if(value == null || value.length() == 0)
+            return value;
+        value = value.trim();
+        if(value.charAt(0) == separator)
+            return value;
+        return separator + value;
+    }
+    
     public static class StringPair implements Entry<String, String>
     {
         private final String key;
