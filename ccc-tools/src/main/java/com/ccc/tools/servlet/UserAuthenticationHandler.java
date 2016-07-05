@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.ccc.tools.servlet.OAuthUserAuthenticator;
+import com.ccc.tools.servlet.OauthUserAuthenticator;
 import com.github.scribejava.core.model.OAuth1AccessToken;
 import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.model.OAuth2AccessToken;
@@ -48,7 +48,7 @@ public class UserAuthenticationHandler
         return instance;
     }
 
-    public static void createInstance(OAuthUserAuthenticator oauthUserAuthenticator)
+    public static void createInstance(OauthUserAuthenticator oauthUserAuthenticator)
     {
         if (instance != null)
             return;
@@ -59,7 +59,7 @@ public class UserAuthenticationHandler
     private OAuth10aService oauth10aService;
     private OAuth20Service oauth20Service;
 
-    private UserAuthenticationHandler(OAuthUserAuthenticator oauthUserAuthenticator)
+    private UserAuthenticationHandler(OauthUserAuthenticator oauthUserAuthenticator)
     {
         OAuthService oauthService = oauthUserAuthenticator.getOAuthService();
         if (oauthService instanceof OAuth10aService)

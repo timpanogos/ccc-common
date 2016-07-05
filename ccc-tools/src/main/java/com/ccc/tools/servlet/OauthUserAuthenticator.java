@@ -24,7 +24,7 @@ import com.github.scribejava.core.oauth.OAuthService;
 /**
  * OAuth User Authenticator Interface
  */
-public interface OAuthUserAuthenticator
+public interface OauthUserAuthenticator
 {
     /**
      * Initialize the OAuthUserAuthenticator with the specified properties.
@@ -55,10 +55,10 @@ public interface OAuthUserAuthenticator
      */
     public Class<? extends WebPage> getOAuthCallbackClass();
 
-    /**
-     * Get the Custom ClientInformation object.
-     * 
-     * @return The callback class.
-     */
-    public BaseClientInformation getClientInformation();
+//    /**
+//     * Get the Custom ClientInformation object.
+//     * 
+//     * @return The callback class.
+//     */
+//    public SessionClientInfo getClientInformation();
 }

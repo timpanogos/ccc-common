@@ -26,9 +26,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ccc.tools.app.serviceUtility.PropertiesFile;
+import com.ccc.tools.servlet.clientInfo.BaseClientInfo;
+import com.ccc.tools.servlet.clientInfo.SessionClientInfo;
+import com.ccc.tools.servlet.login.SignIn20Page;
 
 @SuppressWarnings("javadoc")
-public abstract class OAuthServlet extends AuthenticatedWebApplication
+public abstract class OauthServlet extends AuthenticatedWebApplication
 {
     public static final String LogFilePathKey = "ccc.tools.log-file-path";
     public static final String LogFileBaseKey = "ccc.tools.log-file-base";
@@ -48,11 +51,12 @@ public abstract class OAuthServlet extends AuthenticatedWebApplication
     
     protected final Logger log;
     protected volatile String contextPath;
-    protected volatile OAuthUserAuthenticator authenticator;
+    protected volatile OauthUserAuthenticator authenticator;
     protected volatile CoreController coreController;
     protected volatile Properties properties;
+    protected volatile SessionClientInfo clientInfo;
     
-    public OAuthServlet()
+    public OauthServlet()
     {
         log = LoggerFactory.getLogger(getClass());
     }
@@ -62,19 +66,27 @@ public abstract class OAuthServlet extends AuthenticatedWebApplication
         return properties;
     }
 
-    public BaseClientInformation getClientInformation()
-    {
-        return authenticator.getClientInformation();
-    }
-
     abstract protected String getLogFilePathDefault();
     abstract protected String getOauthImplClassDefault();
     abstract protected String getCoreImplClassDefault();
     abstract protected String getServletConfigDefault();
     abstract protected void init(StringBuilder sb);
-    
     abstract protected Class<? extends AbstractAuthenticatedWebSession> getWebSessionImplClass();
     abstract protected Class<? extends WebPage> getSignInPageImplClass();
+    abstract protected BaseClientInfo getBaseClientInfo();
+   
+    @Override
+    protected Class<? extends AbstractAuthenticatedWebSession> getWebSessionClass()
+    {
+        return getWebSessionImplClass();
+    }
+
+    @Override
+    protected Class<? extends WebPage> getSignInPageClass()
+    {
+        return SignIn20Page.class;
+    }
+    
     
     @Override
     public void init()
@@ -152,8 +164,6 @@ public abstract class OAuthServlet extends AuthenticatedWebApplication
                 //@formatter:on
                 sb.append("\n\t\t" + key + "=" + entry.getValue().toString());
             }
-            
-            msg = "core engine init failed";
         } catch (Exception e)
         {
             sb.append("\n\n" + msg);
@@ -165,7 +175,7 @@ public abstract class OAuthServlet extends AuthenticatedWebApplication
         try
         {
             Class<?> clazz = Class.forName(oauthImplClass);
-            authenticator = (OAuthUserAuthenticator) clazz.newInstance();
+            authenticator = (OauthUserAuthenticator) clazz.newInstance();
         } catch (Exception e)
         {
             throw new RuntimeException("Invalid OAuth implementation class, " + OauthImplClassKey + " = " + oauthImplClass);
@@ -209,17 +219,5 @@ public abstract class OAuthServlet extends AuthenticatedWebApplication
                 log.warn("CoreController.destroy failed to cleanup", e);
             }
         }
-    }
-    
-    @Override
-    protected Class<? extends AbstractAuthenticatedWebSession> getWebSessionClass()
-    {
-        return getWebSessionImplClass();
-    }
-
-    @Override
-    protected Class<? extends WebPage> getSignInPageClass()
-    {
-        return getSignInPageImplClass();
     }
 }

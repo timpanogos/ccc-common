@@ -13,30 +13,11 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.tools.servlet;
+package com.ccc.tools.servlet.clientInfo;
 
-import org.apache.wicket.protocol.http.request.WebClientInfo;
-import org.apache.wicket.request.cycle.RequestCycle;
+import java.io.Serializable;
 
 @SuppressWarnings("javadoc")
-public class BaseClientInformation extends WebClientInfo 
+public interface BaseClientInfo extends Serializable
 {
-    private static final long serialVersionUID = -9077670965488801874L;
-    
-    private boolean authenticated;
-    
-    public BaseClientInformation(RequestCycle requestCycle)
-    {
-        super(requestCycle);
-    }
-
-    public synchronized void setAuthenticated(boolean value)
-    {
-        authenticated = value;
-    }
-    
-    public synchronized boolean isAuthenticated()
-    {
-        return authenticated;
-    }
 }
