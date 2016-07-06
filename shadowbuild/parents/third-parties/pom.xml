@@ -12,7 +12,6 @@
 	<name>Third Party jar dependency management.</name>
 	<dependencyManagement>
 		<dependencies>
-			<!-- https://mvnrepository.com/artifact/org.apache.wicket/wicket-core -->
 			<dependency>
 				<groupId>org.apache.wicket</groupId>
 				<artifactId>wicket-core</artifactId>
@@ -20,7 +19,6 @@
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.apache.wicket/wicket-extensions -->
 			<dependency>
 				<groupId>org.apache.wicket</groupId>
 				<artifactId>wicket-extensions</artifactId>
@@ -28,7 +26,6 @@
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.apache.wicket/wicket-auth-roles -->
 			<dependency>
 				<groupId>org.apache.wicket</groupId>
 				<artifactId>wicket-auth-roles</artifactId>
@@ -37,11 +34,8 @@
 				<scope>compile</scope>
 			</dependency>
 			<!-- https://mvnrepository.com/artifact/com.github.scribejava/scribejava-core -->
-			<!-- 
-				warning, moving the following to 2.4.0 broke CrestAuthorization with strange bug
-				also there there were methods that were not backwards compatible 
-			-->
-			
+			<!-- warning, moving the following to 2.4.0 broke CrestAuthorization with 
+				strange bug also there there were methods that were not backwards compatible -->
 			<dependency>
 				<groupId>com.github.scribejava</groupId>
 				<artifactId>scribejava-core</artifactId>
@@ -49,8 +43,6 @@
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
-
-
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
@@ -93,111 +85,118 @@
 				<scope>compile</scope>
 			</dependency>
 
-			<!-- https://mvnrepository.com/artifact/org.opendof.core-java/dof-oal -->
 			<dependency>
 				<groupId>org.opendof.core-java</groupId>
 				<artifactId>dof-oal</artifactId>
 				<version>7.0.1</version>
 			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.opendof.datatransfer-java/dof-data-transfer-common -->
 			<dependency>
 				<groupId>org.opendof.datatransfer-java</groupId>
 				<artifactId>dof-data-transfer-common</artifactId>
 				<version>2.0</version>
 			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.opendof.core-java/dof-domain-management -->
 			<dependency>
 				<groupId>org.opendof.core-java</groupId>
 				<artifactId>dof-domain-management</artifactId>
 				<version>3.0.1</version>
 			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.opendof.core-java-internal/dof-domain-io -->
 			<dependency>
 				<groupId>org.opendof.core-java-internal</groupId>
 				<artifactId>dof-domain-io</artifactId>
 				<version>3.0.1</version>
 			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.opendof.datatransfer-java/dof-data-transfer-source -->
 			<dependency>
 				<groupId>org.opendof.datatransfer-java</groupId>
 				<artifactId>dof-data-transfer-source</artifactId>
 				<version>2.0</version>
 			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.opendof.datatransfer-java/dof-data-transfer-snapshot -->
 			<dependency>
 				<groupId>org.opendof.datatransfer-java</groupId>
 				<artifactId>dof-data-transfer-snapshot</artifactId>
 				<version>2.0</version>
 			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.opendof.datatransfer-java/dof-data-transfer-sink -->
 			<dependency>
 				<groupId>org.opendof.datatransfer-java</groupId>
 				<artifactId>dof-data-transfer-sink</artifactId>
 				<version>2.0</version>
 			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.opendof.datatransfer-java/dof-data-transfer-manager -->
 			<dependency>
 				<groupId>org.opendof.datatransfer-java</groupId>
 				<artifactId>dof-data-transfer-manager</artifactId>
 				<version>2.0</version>
 			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.opendof.core-java/dof-slf4j-log-listener -->
 			<dependency>
 				<groupId>org.opendof.core-java</groupId>
 				<artifactId>dof-slf4j-log-listener</artifactId>
 				<version>2.0.1</version>
 			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.opendof.core-java/dof-server-restarting-listener -->
 			<dependency>
 				<groupId>org.opendof.core-java</groupId>
 				<artifactId>dof-server-restarting-listener</artifactId>
 				<version>2.0.1</version>
 			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.opendof.core-java/dof-inet -->
 			<dependency>
 				<groupId>org.opendof.core-java</groupId>
 				<artifactId>dof-inet</artifactId>
 				<version>7.0.1</version>
 			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.opendof.core-java/dof-domain-management-command-line-cred-gen -->
 			<dependency>
 				<groupId>org.opendof.core-java</groupId>
 				<artifactId>dof-domain-management-command-line-cred-gen</artifactId>
 				<version>3.0.1</version>
 			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.opendof.core-java/dof-domain-management-command-line -->
 			<dependency>
 				<groupId>org.opendof.core-java</groupId>
 				<artifactId>dof-domain-management-command-line</artifactId>
 				<version>3.0.1</version>
 			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.opendof.core-java/dof-connection-reconnecting-listener -->
 			<dependency>
 				<groupId>org.opendof.core-java</groupId>
 				<artifactId>dof-connection-reconnecting-listener</artifactId>
 				<version>2.0.1</version>
 			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.opendof.core-java-internal/dof-domain-storage-javadb-routines -->
 			<dependency>
 				<groupId>org.opendof.core-java-internal</groupId>
 				<artifactId>dof-domain-storage-javadb-routines</artifactId>
 				<version>3.0.1</version>
 			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.opendof.core-java-internal/dof-domain-storage-javadb-installer -->
 			<dependency>
 				<groupId>org.opendof.core-java-internal</groupId>
 				<artifactId>dof-domain-storage-javadb-installer</artifactId>
 				<version>3.0.1</version>
 			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.opendof.core-java-internal/dof-domain-storage-javadb -->
 			<dependency>
 				<groupId>org.opendof.core-java-internal</groupId>
 				<artifactId>dof-domain-storage-javadb</artifactId>
 				<version>3.0.1</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpasyncclient</artifactId>
+				<version>4.1.2</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>com.google.code.gson</groupId>
+				<artifactId>gson</artifactId>
+				<version>2.7</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>3.1.0</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
 
 
+<!-- 
 			<dependency>
 				<groupId>postgres</groupId>
 				<artifactId>jdbc3</artifactId>
@@ -249,7 +248,7 @@
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
-				<groupId>org.rxtx</groupId> <!-- serial and parallel communications -->
+				<groupId>org.rxtx</groupId>
 				<artifactId>rxtx</artifactId>
 				<version>2.1.7</version>
 				<type>jar</type>
@@ -265,7 +264,7 @@
 			<dependency>
 				<groupId>postgresql</groupId>
 				<artifactId>postgresql</artifactId>
-				<version>9.1-901.jdbc3</version> <!-- 9.1-901.jdbc4 -->
+				<version>9.1-901.jdbc3</version>
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
@@ -293,7 +292,6 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
-				<!-- version>3.2.4.RELEASE</version -->
 				<version>4.1.4.RELEASE</version>
 				<type>jar</type>
 				<scope>compile</scope>
@@ -385,15 +383,7 @@
 			<dependency>
 				<groupId>org.apache.wink</groupId>
 				<artifactId>wink-client-apache-httpclient</artifactId>
-				<!-- version>1.4.0</version not pulling down for some reason -->
 				<version>1.3.0</version>
-				<type>jar</type>
-				<scope>compile</scope>
-			</dependency>
-			<dependency>
-				<groupId>com.google.code.gson</groupId>
-				<artifactId>gson</artifactId>
-				<version>2.7</version>
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
@@ -435,7 +425,6 @@
 			<dependency>
 				<groupId>com.datastax.cassandra</groupId>
 				<artifactId>cassandra-driver-core</artifactId>
-				<!-- version>2.1.4</version breaks branched as.cassandra code -->
 				<version>2.0.2</version>
 				<type>jar</type>
 				<scope>compile</scope>
@@ -447,6 +436,7 @@
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
+-->			
 		</dependencies>
 	</dependencyManagement>
 </project>

@@ -11,6 +11,8 @@ cd third-parties
 call mvn %1 clean 
 cd 	dependency-management
 call mvn %1 clean 
+
+cd ..\..
 goto exit
 
 :error

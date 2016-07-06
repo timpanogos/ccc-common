@@ -17,9 +17,80 @@ package com.ccc.tools.servlet;
 
 import java.util.Properties;
 
+import com.ccc.tools.app.serviceUtility.executor.BlockingExecutor;
+import com.ccc.tools.app.serviceUtility.executor.BlockingExecutorConfig;
+import com.ccc.tools.app.serviceUtility.status.StatusTracker;
+
 @SuppressWarnings("javadoc")
-public interface CoreController
+public class CoreController
 {
-    public void init(Properties properties) throws Exception;
-    public void destroy();
+    BlockingExecutor blockingExecutor;
+    
+    public void init(Properties properties) throws Exception
+    {
+        BlockingExecutorConfig config = new BlockingExecutorConfig()
+        {
+            
+            @Override
+            public String getThreadNamePrefix()
+            {
+                // TODO Auto-generated method stub
+                return null;
+            }
+            
+            @Override
+            public StatusTracker getStatusTracker()
+            {
+                // TODO Auto-generated method stub
+                return null;
+            }
+            
+            @Override
+            public String getStatusSubsystemName()
+            {
+                // TODO Auto-generated method stub
+                return null;
+            }
+            
+            @Override
+            public int getCorePoolSize()
+            {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+            
+            @Override
+            public boolean isAllowCoreThreadTimeout()
+            {
+                // TODO Auto-generated method stub
+                return false;
+            }
+            
+            @Override
+            public int getMaximumPoolSize()
+            {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+            
+            @Override
+            public int getMaximumBlockingTime()
+            {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+            
+            @Override
+            public int getKeepAliveTime()
+            {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+        };   
+    }
+    
+    public void destroy()
+    {
+        
+    }
 }
