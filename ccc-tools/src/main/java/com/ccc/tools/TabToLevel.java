@@ -68,6 +68,16 @@ public class TabToLevel
             sb.append("\n");
     }
     
+    public void inc()
+    {
+        level.incrementAndGet();
+    }
+    
+    public void dec()
+    {
+        level.decrementAndGet();
+    }
+    
     public void indentedOk()
     {
         level.incrementAndGet();

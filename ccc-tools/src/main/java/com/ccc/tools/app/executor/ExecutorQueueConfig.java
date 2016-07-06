@@ -14,10 +14,10 @@
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-package com.ccc.tools.app.serviceUtility.executor;
+package com.ccc.tools.app.executor;
 
-import com.ccc.tools.app.serviceUtility.status.StatusTracker;
-import com.ccc.tools.app.serviceUtility.status.StatusTrackerProvider;
+import com.ccc.tools.app.status.StatusTracker;
+import com.ccc.tools.app.status.StatusTrackerProvider;
 
 /**
  * Declares the required ExecutorQueueConfig interface

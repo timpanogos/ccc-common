@@ -13,7 +13,7 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.tools.app.serviceUtility.status;
+package com.ccc.tools.app.status;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ import org.opendof.core.oal.DOFRequest.Subscribe;
 import org.opendof.core.oal.DOFType;
 import org.opendof.core.oal.value.DOFUInt8;
 
-import com.ccc.tools.app.serviceUtility.executor.ScheduledExecutor;
+import com.ccc.tools.app.executor.ScheduledExecutor;
 
 /**
  * An in-memory implementation of the <code>StatusTracker</code> interface.

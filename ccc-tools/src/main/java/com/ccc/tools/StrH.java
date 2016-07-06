@@ -59,6 +59,13 @@ public class StrH
         return sb;
     }
     
+    public static String trim(String value)
+    {
+        if(value == null)
+            return value;
+        return value.trim();
+    }
+    
     /**
      * Pad string to width and add to StringBuilder.
      *

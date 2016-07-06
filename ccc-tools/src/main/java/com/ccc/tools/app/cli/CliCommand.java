@@ -34,7 +34,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.UnrecognizedOptionException;
 
 import com.ccc.tools.StrH;
-import com.ccc.tools.app.serviceUtility.PropertiesFile;
+import com.ccc.tools.app.PropertiesFile;
 
 /**
  * Command line Interface Command

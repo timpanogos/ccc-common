@@ -13,7 +13,7 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.tools.app.serviceUtility.executor;
+package com.ccc.tools.app.executor;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.LoggerFactory;
 
-import com.ccc.tools.app.serviceUtility.status.StatusTracker;
+import com.ccc.tools.app.status.StatusTracker;
 
 /**
  * A <code>ThreadPoolExecutor</code> that allows for blocking submits.

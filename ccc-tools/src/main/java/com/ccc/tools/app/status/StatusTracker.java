@@ -13,11 +13,13 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.tools.app.serviceUtility.status;
+package com.ccc.tools.app.status;
 
 import java.util.List;
 
 import org.opendof.core.oal.DOFObject;
+
+import com.ccc.tools.app.Service;
 
 
 /**

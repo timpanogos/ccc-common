@@ -25,9 +25,9 @@ import org.apache.wicket.markup.html.WebPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ccc.tools.app.serviceUtility.PropertiesFile;
+import com.ccc.tools.TabToLevel;
+import com.ccc.tools.app.PropertiesFile;
 import com.ccc.tools.servlet.clientInfo.BaseClientInfo;
-import com.ccc.tools.servlet.clientInfo.SessionClientInfo;
 import com.ccc.tools.servlet.login.SignIn20Page;
 
 @SuppressWarnings("javadoc")
@@ -36,12 +36,14 @@ public abstract class OauthServlet extends AuthenticatedWebApplication
     public static final String LogFilePathKey = "ccc.tools.log-file-path";
     public static final String LogFileBaseKey = "ccc.tools.log-file-base";
     public static final String ServletConfigKey = "ccc.tools.servlet.config";
-    public static final String ContextRealBaseKey = "ccc.tools.servlet.context-base";
+//    public static final String ContextRealBaseKey = "ccc.tools.servlet.context-base";
     public static final String WicketPropertiesKey = "ccc.tools.wicket.properties"; // used to store file properties into wicket properties
     public static final String CopyrightYearKey = "ccc.tools.servlet.copyright-year";
     public static final String CopyrightOwnerKey = "ccc.tools.servlet.copyright-owner";
     public static final String OauthImplClassKey = "ccc.tools.servlet.oauth-class";
     public static final String CoreImplClassKey = "ccc.tools.servlet.core-class";
+    public static final String BlockingExcecutorKey = "ccc.tools.executor.blocking-executor"; // system properties global key
+    public static final String ScheduledExcecutorKey = "ccc.tools.executor.scheduled-executor"; // system properties global key
     
     public static final String CopyrightYearDefault = Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
     public static final String CopyrightOwnerDefault = "";
@@ -51,10 +53,8 @@ public abstract class OauthServlet extends AuthenticatedWebApplication
     
     protected final Logger log;
     protected volatile String contextPath;
-    protected volatile OauthUserAuthenticator authenticator;
     protected volatile CoreController coreController;
     protected volatile Properties properties;
-    protected volatile SessionClientInfo clientInfo;
     
     public OauthServlet()
     {
@@ -70,7 +70,7 @@ public abstract class OauthServlet extends AuthenticatedWebApplication
     abstract protected String getOauthImplClassDefault();
     abstract protected String getCoreImplClassDefault();
     abstract protected String getServletConfigDefault();
-    abstract protected void init(StringBuilder sb);
+    abstract protected void init(TabToLevel sb);
     abstract protected Class<? extends AbstractAuthenticatedWebSession> getWebSessionImplClass();
     abstract protected Class<? extends WebPage> getSignInPageImplClass();
     abstract protected BaseClientInfo getBaseClientInfo();
@@ -95,11 +95,11 @@ public abstract class OauthServlet extends AuthenticatedWebApplication
         getDebugSettings().setAjaxDebugModeEnabled(false);
                 
         contextPath = getServletContext().getRealPath("/");
-        StringBuilder sb = new StringBuilder("\n" + getClass().getSimpleName() + ".init");
-        //@formatter:off
-        sb.append("\n\tapplicationKey: " + getApplicationKey())
-            .append("\n\tcontext path: " + contextPath);
-        //@formatter:on
+        TabToLevel format = new TabToLevel();
+        format.ttl("\n", getClass().getSimpleName(), ".init");
+        format.inc();
+        format.ttl("applicationKey: ", getApplicationKey());
+        format.ttl("context path: ", contextPath);
         
         String fileNameIn = getInitParameter(ServletConfigKey);
         String fileName = getServletConfigDefault();
@@ -107,7 +107,7 @@ public abstract class OauthServlet extends AuthenticatedWebApplication
             fileName = fileNameIn;
         else
             fileNameIn = "null";
-        sb.append("\n\tproperties: /classes/" + fileName +"(" +fileNameIn +")");
+        format.ttl("propertiesFile: ", fileName, " (", fileNameIn, ")");
 
         System.setProperty(LogFilePathKey, fileName);
         int idx = fileName.lastIndexOf(".");
@@ -125,7 +125,7 @@ public abstract class OauthServlet extends AuthenticatedWebApplication
                 google = googleIn;
             else
                 googleIn = "null";
-            sb.append("\n\t" + GoogleCSEcxKey + ": " + google + " (" + googleIn + ")");
+            format.ttl(GoogleCSEcxKey, ": ", google, " (", googleIn, ")");
             System.setProperty(GoogleCSEcxKey, google);
             
             String copyrightYearIn = properties.getProperty(CopyrightYearKey);
@@ -134,7 +134,7 @@ public abstract class OauthServlet extends AuthenticatedWebApplication
                 copyrightYear = copyrightYearIn;
             else
                 copyrightYearIn = "null";
-            sb.append("\n\t" + CopyrightYearKey + ": " + copyrightYear + " (" + copyrightYearIn + ")");
+            format.ttl(CopyrightYearKey, ": ", copyrightYear, " (", copyrightYearIn, ")");
             System.setProperty(CopyrightYearKey, copyrightYear);
             
             String copyrightOwnerIn = properties.getProperty(CopyrightOwnerKey);
@@ -143,67 +143,49 @@ public abstract class OauthServlet extends AuthenticatedWebApplication
                 copyrightOwner = copyrightOwnerIn;
             else
                 copyrightOwnerIn = "null";
-            sb.append("\n\t" + CopyrightOwnerKey + ": " + copyrightOwner + " (" + copyrightOwnerIn + ")");
+            format.ttl(CopyrightOwnerKey, ": ", copyrightOwner, " (", copyrightOwnerIn, ")");
             System.setProperty(CopyrightOwnerKey, copyrightOwner);
-            
-            properties.setProperty(ContextRealBaseKey, contextPath);
-                        
-            for (Entry<Object, Object> entry : properties.entrySet())
-            {
-                String key = entry.getKey().toString();
-                //@formatter:off
-                if(ServletConfigKey.equals(key) ||   
-                   LogFilePathKey.equals(key) ||
-                   LogFileBaseKey.equals(key) ||
-                   CopyrightYearKey.equals(key) ||
-                   CopyrightOwnerKey.equals(key) ||
-                   OauthImplClassKey.equals(key) ||
-                   CoreImplClassKey.equals(key) ||
-                   GoogleCSEcxKey.equals(key))
-                        continue;
-                //@formatter:on
-                sb.append("\n\t\t" + key + "=" + entry.getValue().toString());
-            }
-        } catch (Exception e)
-        {
-            sb.append("\n\n" + msg);
-            log.error(sb.toString(), e);
-            throw new RuntimeException(sb.toString(), e);
-        }
 
-        String oauthImplClass = properties.getProperty(OauthImplClassKey, getOauthImplClassDefault());
-        try
-        {
+            String oauthImplClass = properties.getProperty(OauthImplClassKey, getOauthImplClassDefault());
+            msg = "Invalid OAuth implementation class, " + OauthImplClassKey + " = " + oauthImplClass; 
             Class<?> clazz = Class.forName(oauthImplClass);
-            authenticator = (OauthUserAuthenticator) clazz.newInstance();
-        } catch (Exception e)
-        {
-            throw new RuntimeException("Invalid OAuth implementation class, " + OauthImplClassKey + " = " + oauthImplClass);
-        }
-        authenticator.init(properties);
-        
-        Class<? extends WebPage> cbclass = authenticator.getOAuthCallbackClass();
-        mountPage(authenticator.getOAuthCallbackMount(), cbclass);
-        
-        getServletContext().setAttribute(WicketPropertiesKey, properties);
+            OauthUserAuthenticator authenticator = (OauthUserAuthenticator) clazz.newInstance();
+            authenticator.init(properties);
+            
+            Class<? extends WebPage> cbclass = authenticator.getOAuthCallbackClass();
+            mountPage(authenticator.getOAuthCallbackMount(), cbclass);
 
-        String coreImplClass = properties.getProperty(CoreImplClassKey, getCoreImplClassDefault());
-        try
-        {
-            Class<?> clazz = Class.forName(coreImplClass);
+            String coreImplClass = properties.getProperty(CoreImplClassKey, getCoreImplClassDefault());
+            msg = "Invalid CoreController implementation class, " + CoreImplClassKey + " = " + coreImplClass;
+            clazz = Class.forName(coreImplClass);
             coreController = (CoreController) clazz.newInstance();
+            msg = "CoreController.init failed";
+            coreController.init(properties, format);
+
+            getServletContext().setAttribute(WicketPropertiesKey, properties);
+//            properties.setProperty(ContextRealBaseKey, contextPath);
+                        
+            properties.remove(ServletConfigKey);
+            properties.remove(LogFilePathKey);
+            properties.remove(LogFileBaseKey);
+            properties.remove(GoogleCSEcxKey);
+            properties.remove(CopyrightYearKey);
+            properties.remove(CopyrightOwnerKey);
+            properties.remove(OauthImplClassKey);
+            properties.remove(CoreImplClassKey);
+            
+            format.ttl("Other properties");
+            format.inc();
+            for (Entry<Object, Object> entry : properties.entrySet())
+                format.ttl(entry.getKey().toString(), " = ", entry.getValue().toString());
+            format.dec();
         } catch (Exception e)
         {
-            throw new RuntimeException("Invalid CoreController implementation class, " + CoreImplClassKey + " = " + coreImplClass);
+            format.ttl("\n\n" + msg);
+            log.error(format.toString().toString(), e);
+            throw new RuntimeException(msg, e);
         }
-        try
-        {
-            coreController.init(properties);
-        } catch (Exception e)
-        {
-            throw new RuntimeException("CoreController.init failed", e);
-        }
-        init(sb); // call log.info(sb.toString()) in this implementation
+        init(format); // call log.info(sb.toString()) in this implementation
 	}
 
     @Override

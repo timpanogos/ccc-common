@@ -13,11 +13,11 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.tools.app.serviceUtility.status;
+package com.ccc.tools.app.status;
 
 import java.util.List;
 
-import com.ccc.tools.app.serviceUtility.status.StatusTracker.Status;
+import com.ccc.tools.app.status.StatusTracker.Status;
 
 /**
  * A complementary JMX interface to the <code>StatusTrackerProvider</code> implementation.

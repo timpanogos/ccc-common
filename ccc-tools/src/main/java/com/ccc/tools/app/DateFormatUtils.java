@@ -14,7 +14,7 @@
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-package com.ccc.tools.app.serviceUtility;
+package com.ccc.tools.app;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

@@ -17,80 +17,43 @@ package com.ccc.tools.servlet;
 
 import java.util.Properties;
 
-import com.ccc.tools.app.serviceUtility.executor.BlockingExecutor;
-import com.ccc.tools.app.serviceUtility.executor.BlockingExecutorConfig;
-import com.ccc.tools.app.serviceUtility.status.StatusTracker;
+import com.ccc.tools.TabToLevel;
+import com.ccc.tools.app.executor.BlockingExecutor;
+import com.ccc.tools.app.executor.BlockingExecutorConfiguration;
+import com.ccc.tools.app.executor.BlockingExecutorConfiguration.ExecutorConfig;
+import com.ccc.tools.app.executor.ScheduledExecutor;
+import com.ccc.tools.app.executor.ScheduledExecutorConfiguration;
+import com.ccc.tools.app.executor.ScheduledExecutorConfiguration.ScheduledExecutorConfig;
+import com.ccc.tools.app.status.StatusTracker;
+import com.ccc.tools.app.status.StatusTrackerProvider;
 
 @SuppressWarnings("javadoc")
 public class CoreController
 {
-    BlockingExecutor blockingExecutor;
+    private volatile StatusTracker statusTracker;
+    public volatile BlockingExecutor blockingExecutor;
+    public volatile ScheduledExecutor scheduledExecutor;
     
-    public void init(Properties properties) throws Exception
+    public void init(Properties properties, TabToLevel format) throws Exception
     {
-        BlockingExecutorConfig config = new BlockingExecutorConfig()
-        {
-            
-            @Override
-            public String getThreadNamePrefix()
-            {
-                // TODO Auto-generated method stub
-                return null;
-            }
-            
-            @Override
-            public StatusTracker getStatusTracker()
-            {
-                // TODO Auto-generated method stub
-                return null;
-            }
-            
-            @Override
-            public String getStatusSubsystemName()
-            {
-                // TODO Auto-generated method stub
-                return null;
-            }
-            
-            @Override
-            public int getCorePoolSize()
-            {
-                // TODO Auto-generated method stub
-                return 0;
-            }
-            
-            @Override
-            public boolean isAllowCoreThreadTimeout()
-            {
-                // TODO Auto-generated method stub
-                return false;
-            }
-            
-            @Override
-            public int getMaximumPoolSize()
-            {
-                // TODO Auto-generated method stub
-                return 0;
-            }
-            
-            @Override
-            public int getMaximumBlockingTime()
-            {
-                // TODO Auto-generated method stub
-                return 0;
-            }
-            
-            @Override
-            public int getKeepAliveTime()
-            {
-                // TODO Auto-generated method stub
-                return 0;
-            }
-        };   
+        statusTracker = new StatusTrackerProvider();
+        blockingExecutor = new BlockingExecutor();
+        ExecutorConfig beconfig = BlockingExecutorConfiguration.propertiesToConfig(properties, statusTracker, format);
+        blockingExecutor.init(beconfig);
+        properties.put(OauthServlet.BlockingExcecutorKey, blockingExecutor);
+        scheduledExecutor = new ScheduledExecutor();
+        ScheduledExecutorConfig seconfig = ScheduledExecutorConfiguration.propertiesToConfig(properties, statusTracker, format);
+        scheduledExecutor.init(seconfig);
+        properties.put(OauthServlet.ScheduledExcecutorKey, scheduledExecutor);
     }
     
     public void destroy()
     {
-        
+        if(statusTracker != null)
+            statusTracker.destroy();
+        if(scheduledExecutor != null)
+            scheduledExecutor.shutdownNow();
+        if(blockingExecutor != null)
+            blockingExecutor.shutdownNow();
     }
 }

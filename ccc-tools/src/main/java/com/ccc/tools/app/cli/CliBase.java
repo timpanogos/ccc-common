@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ccc.tools.StrH;
-import com.ccc.tools.app.serviceUtility.ClassInfo;
+import com.ccc.tools.app.ClassInfo;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
