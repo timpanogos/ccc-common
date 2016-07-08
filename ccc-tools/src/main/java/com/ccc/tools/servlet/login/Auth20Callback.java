@@ -80,7 +80,9 @@ public class Auth20Callback extends WebPage
         {
             try
             {
+LoggerFactory.getLogger(getClass()).info("refresh accessToken attempt");                
                 clientInfo.setAccessToken(handler.refreshAccessToken(((OAuth2AccessToken) clientInfo.getAccessToken()).getRefreshToken()));
+LoggerFactory.getLogger(getClass()).info("Srefresh accessToken success");                
             } catch (Exception e)
             {
                 timer.cancel();
