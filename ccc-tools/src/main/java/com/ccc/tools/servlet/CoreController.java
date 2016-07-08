@@ -18,14 +18,14 @@ package com.ccc.tools.servlet;
 import java.util.Properties;
 
 import com.ccc.tools.TabToLevel;
-import com.ccc.tools.app.executor.BlockingExecutor;
-import com.ccc.tools.app.executor.BlockingExecutorConfiguration;
-import com.ccc.tools.app.executor.BlockingExecutorConfiguration.ExecutorConfig;
-import com.ccc.tools.app.executor.ScheduledExecutor;
-import com.ccc.tools.app.executor.ScheduledExecutorConfiguration;
-import com.ccc.tools.app.executor.ScheduledExecutorConfiguration.ScheduledExecutorConfig;
 import com.ccc.tools.app.status.StatusTracker;
 import com.ccc.tools.app.status.StatusTrackerProvider;
+import com.ccc.tools.executor.BlockingExecutor;
+import com.ccc.tools.executor.PropertiesBlockingExecutorConfig;
+import com.ccc.tools.executor.PropertiesScheduledExecutorConfig;
+import com.ccc.tools.executor.ScheduledExecutor;
+import com.ccc.tools.executor.PropertiesBlockingExecutorConfig.ExecutorConfig;
+import com.ccc.tools.executor.PropertiesScheduledExecutorConfig.ScheduledExecutorConfig;
 
 @SuppressWarnings("javadoc")
 public class CoreController
@@ -38,11 +38,11 @@ public class CoreController
     {
         statusTracker = new StatusTrackerProvider();
         blockingExecutor = new BlockingExecutor();
-        ExecutorConfig beconfig = BlockingExecutorConfiguration.propertiesToConfig(properties, statusTracker, format);
+        ExecutorConfig beconfig = PropertiesBlockingExecutorConfig.propertiesToConfig(properties, statusTracker, format);
         blockingExecutor.init(beconfig);
         properties.put(OauthServlet.BlockingExcecutorKey, blockingExecutor);
         scheduledExecutor = new ScheduledExecutor();
-        ScheduledExecutorConfig seconfig = ScheduledExecutorConfiguration.propertiesToConfig(properties, statusTracker, format);
+        ScheduledExecutorConfig seconfig = PropertiesScheduledExecutorConfig.propertiesToConfig(properties, statusTracker, format);
         scheduledExecutor.init(seconfig);
         properties.put(OauthServlet.ScheduledExcecutorKey, scheduledExecutor);
     }

@@ -13,7 +13,7 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.tools.app.cli;
+package com.ccc.tools.cli;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,8 +33,8 @@ import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.UnrecognizedOptionException;
 
+import com.ccc.tools.PropertiesFile;
 import com.ccc.tools.StrH;
-import com.ccc.tools.app.PropertiesFile;
 
 /**
  * Command line Interface Command

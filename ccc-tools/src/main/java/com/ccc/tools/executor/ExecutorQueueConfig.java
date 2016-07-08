@@ -14,7 +14,7 @@
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-package com.ccc.tools.app.executor;
+package com.ccc.tools.executor;
 
 import com.ccc.tools.app.status.StatusTracker;
 import com.ccc.tools.app.status.StatusTrackerProvider;

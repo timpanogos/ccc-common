@@ -13,7 +13,7 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.tools.app.cli;
+package com.ccc.tools.cli;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,8 +29,8 @@ import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ccc.tools.ClassInfo;
 import com.ccc.tools.StrH;
-import com.ccc.tools.app.ClassInfo;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;

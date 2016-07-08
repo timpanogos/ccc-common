@@ -13,7 +13,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-package com.ccc.tools.app.executor;
+package com.ccc.tools.executor;
 
 import java.util.Properties;
 
@@ -22,7 +22,7 @@ import com.ccc.tools.TabToLevel;
 import com.ccc.tools.app.status.StatusTracker;
 
 @SuppressWarnings("javadoc")
-public class BlockingExecutorConfiguration
+public class PropertiesBlockingExecutorConfig
 {
     public static final String CorePoolSizeKey = "ccc.tools.executor.core-size";
     public static final String MaximumQueueSizeKey = "ccc.tools.executor.max-queue-size";

@@ -34,7 +34,7 @@ import org.opendof.core.oal.DOFRequest.Subscribe;
 import org.opendof.core.oal.DOFType;
 import org.opendof.core.oal.value.DOFUInt8;
 
-import com.ccc.tools.app.executor.ScheduledExecutor;
+import com.ccc.tools.executor.ScheduledExecutor;
 
 /**
  * An in-memory implementation of the <code>StatusTracker</code> interface.

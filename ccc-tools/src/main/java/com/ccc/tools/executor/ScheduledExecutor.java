@@ -13,7 +13,7 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.tools.app.executor;
+package com.ccc.tools.executor;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.ScheduledThreadPoolExecutor;

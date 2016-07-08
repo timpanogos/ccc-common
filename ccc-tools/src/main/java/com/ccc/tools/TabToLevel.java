@@ -25,7 +25,16 @@ public class TabToLevel
     
     public TabToLevel()
     {
-        this(null);
+        this((StringBuilder)null);
+    }
+    
+    public TabToLevel(String initialLine)
+    {
+        this((StringBuilder)null);
+        sb.append("\n");
+        sb.append(initialLine);
+        sb.append("\n");
+        level.incrementAndGet();
     }
     
     public void clear()

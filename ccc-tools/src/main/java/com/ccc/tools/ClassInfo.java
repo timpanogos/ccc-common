@@ -13,7 +13,7 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.tools.app;
+package com.ccc.tools;
 
 import java.io.IOException;
 import java.net.URL;

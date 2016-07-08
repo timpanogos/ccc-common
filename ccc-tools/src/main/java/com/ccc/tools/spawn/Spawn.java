@@ -14,7 +14,7 @@
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-package com.ccc.tools.app.spawn;
+package com.ccc.tools.spawn;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

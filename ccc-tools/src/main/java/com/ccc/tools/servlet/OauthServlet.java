@@ -25,10 +25,13 @@ import org.apache.wicket.markup.html.WebPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ccc.tools.PropertiesFile;
 import com.ccc.tools.TabToLevel;
-import com.ccc.tools.app.PropertiesFile;
 import com.ccc.tools.servlet.clientInfo.BaseClientInfo;
 import com.ccc.tools.servlet.login.SignIn20Page;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
 
 @SuppressWarnings("javadoc")
 public abstract class OauthServlet extends AuthenticatedWebApplication
@@ -59,6 +62,12 @@ public abstract class OauthServlet extends AuthenticatedWebApplication
     public OauthServlet()
     {
         log = LoggerFactory.getLogger(getClass());
+        if(log.isInfoEnabled())
+        {
+            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+            // TODO: StatusPrinter.setPrintStream
+            StatusPrinter.print(lc);
+        }
     }
     
     public Properties getFileProperties()
@@ -109,15 +118,23 @@ public abstract class OauthServlet extends AuthenticatedWebApplication
             fileNameIn = "null";
         format.ttl("propertiesFile: ", fileName, " (", fileNameIn, ")");
 
-        System.setProperty(LogFilePathKey, fileName);
-        int idx = fileName.lastIndexOf(".");
-        System.setProperty(LogFileBaseKey, fileName.substring(0, idx));
-        
         properties = new Properties();
         String msg = "configuration properties file not found: " + fileName;
         try
         {
             PropertiesFile.load(properties, fileName);
+
+            String logfileIn = properties.getProperty(LogFilePathKey);
+            String logfile = getLogFilePathDefault();
+            if (logfileIn != null)
+                logfile = logfileIn;
+            else
+                logfileIn = "null";
+            format.ttl("logfile: ", logfile, " (", logfileIn, ")");
+            System.setProperty(LogFilePathKey, logfile);
+            
+            int idx = logfile.lastIndexOf(".");
+            System.setProperty(LogFileBaseKey, logfile.substring(0, idx));
             
             String googleIn = properties.getProperty(GoogleCSEcxKey);
             String google = GoogleCSEcxDefault;

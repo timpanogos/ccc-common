@@ -13,7 +13,7 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.tools.app;
+package com.ccc.tools;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,8 +24,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import com.ccc.tools.StrH.StringPair;
 
