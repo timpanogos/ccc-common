@@ -15,6 +15,8 @@
 */
 package com.ccc.tools.servlet;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import com.ccc.tools.TabToLevel;
@@ -22,10 +24,13 @@ import com.ccc.tools.app.status.StatusTracker;
 import com.ccc.tools.app.status.StatusTrackerProvider;
 import com.ccc.tools.executor.BlockingExecutor;
 import com.ccc.tools.executor.PropertiesBlockingExecutorConfig;
-import com.ccc.tools.executor.PropertiesScheduledExecutorConfig;
-import com.ccc.tools.executor.ScheduledExecutor;
 import com.ccc.tools.executor.PropertiesBlockingExecutorConfig.ExecutorConfig;
+import com.ccc.tools.executor.PropertiesScheduledExecutorConfig;
 import com.ccc.tools.executor.PropertiesScheduledExecutorConfig.ScheduledExecutorConfig;
+import com.ccc.tools.executor.ScheduledExecutor;
+import com.ccc.tools.servlet.clientInfo.BaseClientInfo;
+import com.ccc.tools.servlet.events.AuthenticatedEvent;
+import com.ccc.tools.servlet.events.AuthenticatedEventListener;
 
 @SuppressWarnings("javadoc")
 public class CoreController
@@ -33,6 +38,54 @@ public class CoreController
     private volatile StatusTracker statusTracker;
     public volatile BlockingExecutor blockingExecutor;
     public volatile ScheduledExecutor scheduledExecutor;
+    
+    private final List<AuthenticatedEventListener> authenticatedEventListeners; 
+    
+    public CoreController()
+    {
+    	authenticatedEventListeners = new ArrayList<AuthenticatedEventListener>();
+    }
+    
+    //TODO: decide if throwing exception on duplicates
+    public void registerAuthenticatedListener(AuthenticatedEventListener listener)
+    {
+    	synchronized(authenticatedEventListeners)
+    	{
+    		authenticatedEventListeners.add(listener);
+    	}
+    }
+    
+    public void deregisterAuthenticatedListener(AuthenticatedEventListener listener)
+    {
+    	synchronized(authenticatedEventListeners)
+    	{
+    		authenticatedEventListeners.remove(listener);
+    	}
+    }
+    
+    public void fireAuthenticatedListeners(BaseClientInfo clientInfo, AuthenticatedEventListener.Type type)
+    {
+    	synchronized(authenticatedEventListeners)
+    	{
+    		for(AuthenticatedEventListener listener : authenticatedEventListeners)
+    		{
+    			switch(type)
+    			{
+				case Authenticated:
+    				listener.authenticated(clientInfo);
+					break;
+				case Dropped:
+    				listener.dropped(clientInfo);
+					break;
+				case Refreshed:
+    				listener.refreshed(clientInfo);
+					break;
+				default:
+					break;
+    			}
+    		}
+    	}
+    }
     
     public void init(Properties properties, TabToLevel format) throws Exception
     {

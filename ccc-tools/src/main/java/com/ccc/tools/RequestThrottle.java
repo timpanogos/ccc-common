@@ -18,6 +18,8 @@ package com.ccc.tools;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.slf4j.LoggerFactory;
+
 /**
  * Requests Per Second Throttling class
  */
@@ -82,14 +84,14 @@ public class RequestThrottle
     }
 
     
-//    private AtomicInteger hits = new AtomicInteger();
+    private AtomicInteger hits = new AtomicInteger();
     /**
      * wait for next interval if we are already at max.
      */
     public void waitAsNeeded()
     {
-//        TabToLevel format = new TabToLevel("waitAsNeeded:");
-//        format.ttl("hits: " + hits.incrementAndGet());
+        TabToLevel format = new TabToLevel("waitAsNeeded:");
+        format.ttl("hits: " + hits.incrementAndGet());
         long t1 = System.currentTimeMillis();
         lastAccess.set(t1);
 
@@ -99,58 +101,58 @@ public class RequestThrottle
         long realInterval = t1 / customScale;
         long lastInterval = lastRealInterval.get();
         lastRealInterval.set(realInterval);
-//        format.ttl("elapsedRealtime: ", ElapsedTimer.getNormalizedString(elapsedRealtime));
-//        format.ttl("realInterval: ", realInterval);
-//        format.ttl("lastRealInterval: ", lastInterval);
+        format.ttl("elapsedRealtime: ", ElapsedTimer.getNormalizedString(elapsedRealtime));
+        format.ttl("realInterval: ", realInterval);
+        format.ttl("lastRealInterval: ", lastInterval);
         realtimeCount.incrementAndGet();
-//        format.ttl("realtimeCount: ", realtimeCount.get());
+        format.ttl("realtimeCount: ", realtimeCount.get());
         if (lastInterval == 0 || realInterval - lastInterval >= 2)
         {
             sendtimeCount.set(0);
             realtimeCount.set(0);
-//            format.ttl("real time up two intervals, cleared counters and return");
-//            LoggerFactory.getLogger(getClass()).info(format.toString());
+            format.ttl("real time up two intervals, cleared counters and return");
+            LoggerFactory.getLogger(getClass()).info(format.toString());
             return;
         }
-//        format.ttl("another hit within the same realtime interval");
-//        format.inc();
+        format.ttl("another hit within the same realtime interval");
+        format.inc();
         if (realInterval - lastInterval > 0)
         {
-//            format.ttl("spanned a realtime interval");
-//            format.inc();
+            format.ttl("spanned a realtime interval");
+            format.inc();
             if (realtimeCount.get() < maxPerInterval)
             {
-//                format.ttl("adjusting sendtime count and returning");
-//                format.inc();
-//                format.ttl("realtimeCount was: ", realtimeCount.get());
-//                format.ttl("sendtimeCount was: ", sendtimeCount.get());
+                format.ttl("adjusting sendtime count and returning");
+                format.inc();
+                format.ttl("realtimeCount was: ", realtimeCount.get());
+                format.ttl("sendtimeCount was: ", sendtimeCount.get());
                 realtimeCount.set(sendtimeCount.get());
                 sendtimeCount.set(0);
-//                format.ttl("realtimeCount: ", realtimeCount.get());
-//                format.ttl("sendtimeCount: ", sendtimeCount.get());
-//                format.ttl("returning");
-//                LoggerFactory.getLogger(getClass()).info(format.toString());
+                format.ttl("realtimeCount: ", realtimeCount.get());
+                format.ttl("sendtimeCount: ", sendtimeCount.get());
+                format.ttl("returning");
+                LoggerFactory.getLogger(getClass()).info(format.toString());
                 return;
             }
-//            format.ttl("realtime count < ", maxPerInterval, " continue to check sendtime processing");
-//            format.dec();
+            format.ttl("realtime count < ", maxPerInterval, " continue to check sendtime processing");
+            format.dec();
         }
         // capture counts in the sendtime interval window
         sendtimeCount.incrementAndGet();
-//        format.ttl("realtimeCount: ", realtimeCount.get());
-//        format.ttl("sendtimeCount: ", sendtimeCount.get());
+        format.ttl("realtimeCount: ", realtimeCount.get());
+        format.ttl("sendtimeCount: ", sendtimeCount.get());
         // if same send interval, we need to block on sendtimeCounts >= maxPerInterval
         if (realtimeCount.get() >= maxPerInterval)
         {
             // block until the next realtime interval
-//            format.ttl("need to wait");
-//            format.inc();
+            format.ttl("need to wait");
+            format.inc();
             long realRemainder = elapsedRealtime % customScale;
             if (realRemainder == 0)
                 ++realRemainder;
             realRemainder = customScale - realRemainder;
             ++realRemainder; // rounding errors can leave us just a bit shy, would rather go over
-//            format.ttl("waiting for: ", ElapsedTimer.getNormalizedString(realRemainder));
+            format.ttl("waiting for: ", ElapsedTimer.getNormalizedString(realRemainder));
             try
             {
                 Thread.sleep(realRemainder);
@@ -162,7 +164,7 @@ public class RequestThrottle
             t1 = System.currentTimeMillis();
             realInterval = t1 / customScale;
         }
-//        LoggerFactory.getLogger(getClass()).info(format.toString());
+        LoggerFactory.getLogger(getClass()).info(format.toString());
     }
 
     @SuppressWarnings("javadoc")

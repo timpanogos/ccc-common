@@ -22,9 +22,11 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.slf4j.LoggerFactory;
 
+import com.ccc.tools.servlet.OauthServlet;
 import com.ccc.tools.servlet.UserAuthenticationHandler;
 import com.ccc.tools.servlet.clientInfo.Base20ClientInfo;
 import com.ccc.tools.servlet.clientInfo.SessionClientInfo;
+import com.ccc.tools.servlet.events.AuthenticatedEventListener;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 
 @SuppressWarnings("javadoc")
@@ -60,8 +62,9 @@ public class Auth20Callback extends WebPage
         sessionClientInfo.setAuthenticated(true);
         long expiresIn = ((OAuth2AccessToken) clientInfo.getAccessToken()).getExpiresIn();
         expiresIn *= 1000;
-        expiresIn -= 30 * 1000; // give it 30 seconds pre-expire
+        expiresIn -= 60 * 1000; // give it 60 seconds pre-expire
         timer.scheduleAtFixedRate(new RefreshTask(handler, clientInfo), expiresIn, expiresIn);
+        ((OauthServlet)getApplication()).getController().fireAuthenticatedListeners(clientInfo, AuthenticatedEventListener.Type.Authenticated);
     }
     
     private class RefreshTask extends TimerTask
@@ -82,7 +85,8 @@ public class Auth20Callback extends WebPage
             {
 LoggerFactory.getLogger(getClass()).info("refresh accessToken attempt");                
                 clientInfo.setAccessToken(handler.refreshAccessToken(((OAuth2AccessToken) clientInfo.getAccessToken()).getRefreshToken()));
-LoggerFactory.getLogger(getClass()).info("Srefresh accessToken success");                
+                ((OauthServlet)getApplication()).getController().fireAuthenticatedListeners(clientInfo, AuthenticatedEventListener.Type.Refreshed);
+LoggerFactory.getLogger(getClass()).info("refresh accessToken success");                
             } catch (Exception e)
             {
                 timer.cancel();

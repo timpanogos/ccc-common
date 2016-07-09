@@ -70,6 +70,11 @@ public abstract class OauthServlet extends AuthenticatedWebApplication
         }
     }
     
+    public CoreController getController()
+    {
+    	return coreController;
+    }
+    
     public Properties getFileProperties()
     {
         return properties;
