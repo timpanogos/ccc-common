@@ -49,6 +49,13 @@
 			</dependency>
 			<dependency>
 		        <groupId>com.ccc.crest</groupId>
+            	<artifactId>crest-core</artifactId>
+		        <version>1.0</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+		        <groupId>com.ccc.crest</groupId>
             	<artifactId>crest-da</artifactId>
 		        <version>1.0</version>
 				<type>jar</type>
@@ -63,7 +70,7 @@
 			</dependency>
 			<dependency>
 		        <groupId>com.ccc.crest</groupId>
-            	<artifactId>crest-servlet</artifactId>
+            	<artifactId>crest-wicket</artifactId>
 		        <version>1.0</version>
 				<type>jar</type>
 				<scope>compile</scope>
