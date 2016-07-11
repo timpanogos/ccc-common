@@ -29,7 +29,7 @@ public class WicketWebSession extends AuthenticatedWebSession
     {
         super(request);
         WicketClientInfo clientInfo = new WicketClientInfo(RequestCycle.get());
-        clientInfo.setOauthClientInfo(((WicketServlet)getApplication()).getBaseClientInfo());
+        clientInfo.setOauthClientInfo(((WicketBaseServlet)getApplication()).getBaseClientInfo());
         setClientInfo(clientInfo);
     }
 

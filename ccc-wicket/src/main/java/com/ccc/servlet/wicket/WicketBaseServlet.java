@@ -36,7 +36,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
 
 @SuppressWarnings("javadoc")
-public abstract class OauthServlet extends AuthenticatedWebApplication
+public abstract class WicketBaseServlet extends AuthenticatedWebApplication
 {
     public static final String ServletConfigKey = "ccc.tools.servlet.config";
     public static final String CopyrightYearKey = "ccc.tools.servlet.copyright-year";
@@ -54,7 +54,7 @@ public abstract class OauthServlet extends AuthenticatedWebApplication
     protected volatile String contextPath;
     protected volatile Properties properties;
     
-    public OauthServlet()
+    public WicketBaseServlet()
     {
         log = LoggerFactory.getLogger(getClass());
         if(log.isInfoEnabled())
@@ -131,7 +131,7 @@ public abstract class OauthServlet extends AuthenticatedWebApplication
             String oauthImplClass = StrH.getParameter(properties, OauthImplClassKey, getOauthImplClassDefault(), format);
             msg = "Invalid OAuth implementation class, " + OauthImplClassKey + " = " + oauthImplClass; 
             Class<?> clazz = Class.forName(oauthImplClass);
-            OauthUserAuthenticator authenticator = (OauthUserAuthenticator) clazz.newInstance();
+            WicketUserAuthenticator authenticator = (WicketUserAuthenticator) clazz.newInstance();
             authenticator.init(properties);
             
             Class<? extends WebPage> cbclass = authenticator.getOAuthCallbackClass();
