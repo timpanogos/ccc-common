@@ -14,7 +14,28 @@
 		<dependencies>
 			<dependency>
 		        <groupId>com.ccc</groupId>
+            	<artifactId>ccc-db</artifactId>
+		        <version>1.0</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+		        <groupId>com.ccc</groupId>
+            	<artifactId>ccc-oauth</artifactId>
+		        <version>1.0</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+		        <groupId>com.ccc</groupId>
             	<artifactId>ccc-tools</artifactId>
+		        <version>1.0</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+		        <groupId>com.ccc.servlet</groupId>
+            	<artifactId>ccc-wicket</artifactId>
 		        <version>1.0</version>
 				<type>jar</type>
 				<scope>compile</scope>

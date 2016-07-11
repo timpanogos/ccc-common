@@ -14,28 +14,16 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-core</artifactId>
+			<groupId>org.opendof.core-java</groupId>
+			<artifactId>dof-server-restarting-listener</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-auth-roles</artifactId>
+			<groupId>org.opendof.core-java</groupId>
+			<artifactId>dof-connection-reconnecting-listener</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.github.scribejava</groupId>
-			<artifactId>scribejava-core</artifactId>
-		</dependency>
-		<dependency> 
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>commons-cli</groupId>
@@ -48,18 +36,6 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.opendof.core-java</groupId>
-			<artifactId>dof-server-restarting-listener</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.opendof.core-java</groupId>
-			<artifactId>dof-connection-reconnecting-listener</artifactId>
 		</dependency>
 	</dependencies>
 </project>
