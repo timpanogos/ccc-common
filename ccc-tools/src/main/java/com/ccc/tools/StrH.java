@@ -18,7 +18,6 @@ package com.ccc.tools;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-
 @SuppressWarnings("javadoc")
 public class StrH
 {
@@ -41,7 +40,8 @@ public class StrH
         if(value != null)
         {
             value = value.trim();
-            format.ttl(key, " = ", value);
+            if(format != null)
+                format.ttl(key, " = ", value);
         }
         else
         {
@@ -49,7 +49,8 @@ public class StrH
                 throw new Exception(key + " not specified in properties file");
             if(defaultValue != null)
                 value = defaultValue.trim();
-            format.ttl(key, " = ", value, " (default injected)");
+            if(format != null)
+                format.ttl(key, " = ", value, " (default injected)");
         }
         properties.remove(key);
         return value;

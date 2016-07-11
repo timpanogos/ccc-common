@@ -119,6 +119,13 @@ public abstract class WicketBaseServlet extends AuthenticatedWebApplication
             int idx = logfile.lastIndexOf(".");
             System.setProperty(CoreController.LogFileBaseKey, logfile.substring(0, idx));
             
+            String coreImplClass = StrH.getParameter(properties, CoreImplClassKey, getCoreImplClassDefault(), format);
+            msg = "Invalid CoreController implementation class, " + CoreImplClassKey + " = " + coreImplClass;
+            Class<?> clazz = Class.forName(coreImplClass);
+            CoreController coreController = (CoreController) clazz.newInstance();
+            msg = "CoreController.init failed";
+            coreController.init(properties, format);
+
             String google = StrH.getParameter(properties, GoogleCSEcxKey, GoogleCSEcxDefault, format);
             System.setProperty(GoogleCSEcxKey, google);
             
@@ -130,19 +137,12 @@ public abstract class WicketBaseServlet extends AuthenticatedWebApplication
 
             String oauthImplClass = StrH.getParameter(properties, OauthImplClassKey, getOauthImplClassDefault(), format);
             msg = "Invalid OAuth implementation class, " + OauthImplClassKey + " = " + oauthImplClass; 
-            Class<?> clazz = Class.forName(oauthImplClass);
+            clazz = Class.forName(oauthImplClass);
             WicketUserAuthenticator authenticator = (WicketUserAuthenticator) clazz.newInstance();
             authenticator.init(properties);
             
             Class<? extends WebPage> cbclass = authenticator.getOAuthCallbackClass();
             mountPage(authenticator.getOAuthCallbackMount(), cbclass);
-
-            String coreImplClass = StrH.getParameter(properties, CoreImplClassKey, getCoreImplClassDefault(), format);
-            msg = "Invalid CoreController implementation class, " + CoreImplClassKey + " = " + coreImplClass;
-            clazz = Class.forName(coreImplClass);
-            CoreController coreController = (CoreController) clazz.newInstance();
-            msg = "CoreController.init failed";
-            coreController.init(properties, format);
 
             format.ttl("Other properties");
             format.inc();

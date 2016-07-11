@@ -29,8 +29,9 @@ public interface OauthUserAuthenticator
      * 
      * @param properties
      *            The properties to be passed to the OAuthUserAuthenticator.
+     * @throws Exception if the initialization fails
      */
-    public void init(Properties properties);
+    public void init(Properties properties) throws Exception;
 
     /**
      * Get an OAuthService object. This may be a OAuth10aService or OAuth20Service.
