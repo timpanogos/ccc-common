@@ -23,11 +23,12 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 @AuthorizeInstantiation("ADMIN")
 public class LoginPage extends WebPage
 {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 3107194165543636592L;
 
     public LoginPage(final PageParameters parameters)
     {
         super(parameters);
+//TODO: need to fire up a timeout here, clearing it on the callback, and bringing up an information page on timeout        
         setResponsePage(getApplication().getHomePage());
     }
 }

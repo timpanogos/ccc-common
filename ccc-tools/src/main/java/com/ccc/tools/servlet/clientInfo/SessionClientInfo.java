@@ -18,6 +18,7 @@ package com.ccc.tools.servlet.clientInfo;
 import org.apache.wicket.protocol.http.request.WebClientInfo;
 import org.apache.wicket.request.cycle.RequestCycle;
 
+@SuppressWarnings("javadoc")
 public class SessionClientInfo extends WebClientInfo 
 {
     private static final long serialVersionUID = 2619172563751052839L;

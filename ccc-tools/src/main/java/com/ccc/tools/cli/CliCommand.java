@@ -34,7 +34,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.UnrecognizedOptionException;
 
 import com.ccc.tools.PropertiesFile;
-import com.ccc.tools.StrH;
+import com.ccc.tools.TabToLevel;
 
 /**
  * Command line Interface Command
@@ -291,11 +291,11 @@ public abstract class CliCommand
             }
             if (gotConfig)
             {
-                StringBuilder sb = cliBase.getInitsb();
+                TabToLevel format = cliBase.getInitFormat();
                 Properties properties = cliBase.getProperties();
                 String configPathKey = cliBase.getConfigPathKey();
                 String configPath = commandline.getOptionValue(CliBase.ConfigurationPathShortCl);
-                StrH.ttl(sb, 1, "--", CliBase.ConfigurationPathLongCl, " = ", configPath);
+                format.ttl("--", CliBase.ConfigurationPathLongCl, " = ", configPath);
                 try
                 {
                     PropertiesFile.loadFile(properties, new File(configPath));
@@ -305,7 +305,7 @@ public abstract class CliCommand
                 }
                 if (configPathKey != null)
                 {
-                    StrH.ttl(sb, 1, configPathKey, " = ", configPath);
+                    format.ttl(configPathKey, " = ", configPath);
                     System.setProperty(configPathKey, configPath);
                 }
             }

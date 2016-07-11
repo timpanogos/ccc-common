@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import com.ccc.tools.ClassInfo;
 import com.ccc.tools.StrH;
+import com.ccc.tools.TabToLevel;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -133,7 +134,7 @@ public class CliBase extends Thread
     private final int maxHelpWidth;
     private final Map<String, CliCommand> commands;
     private final String version;
-    private final StringBuilder initsb;
+    private final TabToLevel format;
     protected final Properties properties;
     private AtomicBoolean nonCommandCli;
     protected volatile Logger log;
@@ -175,11 +176,11 @@ public class CliBase extends Thread
         properties = new Properties();
         commands = new HashMap<String, CliCommand>();
         version = ClassInfo.getInfo(getClass()).getPackage().getImplementationVersion();
-        initsb = new StringBuilder("\n" + getClass().getSimpleName() + " init:\n");
-        StrH.ttl(initsb, 1, "executableName", " = ", executableName);
-        StrH.ttl(initsb, 1, "version", " = ", version);
-        StrH.ttl(initsb, 1, "configSwitch", " = ", configSwitch);
-        StrH.ttl(initsb, 1, "logToFileSwitch", " = ", logToFileSwitch);
+        format = new TabToLevel(getClass().getSimpleName() + " init:");
+        format.ttl("executableName", " = ", executableName);
+        format.ttl("version", " = ", version);
+        format.ttl("configSwitch", " = ", configSwitch);
+        format.ttl("logToFileSwitch", " = ", logToFileSwitch);
     }
     
     /**
@@ -248,9 +249,9 @@ public class CliBase extends Thread
      * @return the <code>StringBuilder</code> capturing all initialization 
      * information used for debug logging.  Will never be null. 
      */
-    public StringBuilder getInitsb()
+    public TabToLevel getInitFormat()
     {
-        return initsb;
+        return format;
     }
     
     /**
@@ -403,7 +404,8 @@ public class CliBase extends Thread
         handleLogger(command.getCommandLine(), gotConfig);
         if(log.isDebugEnabled())
         {
-            StrH.ttl(initsb, 1, "java.class.path:");
+            format.ttl("java.class.path:");
+            format.inc();
             String path = System.getProperty("java.class.path");
             do
             {
@@ -411,12 +413,13 @@ public class CliBase extends Thread
                 if (index == -1)
                     break;
                 String element = path.substring(0, index);
-                StrH.ttl(initsb, 2, element);
+                format.ttl(element);
                 path = path.substring(++index);
             } while (true);
+            format.dec();
             path = path.replace(';', '\n');
         }
-        log.debug(initsb.toString());
+        log.debug(format.toString());
         return activeCommand;
     }
     
@@ -453,7 +456,7 @@ public class CliBase extends Thread
             if(gotConfig)
             {
                 logPath = properties.getProperty(LogFilePathKey);
-                StrH.ttl(initsb, 1, LogFilePathKey, " = ", logPath);
+                format.ttl(LogFilePathKey, " = ", logPath);
                 if(logPath != null)
                 {
                     System.setProperty(LogFilePathKey, logPath);
@@ -461,7 +464,7 @@ public class CliBase extends Thread
                     int idx = logPath.lastIndexOf('.');
                     if(idx != -1)
                         base = logPath.substring(0, idx);
-                    StrH.ttl(initsb, 1, LogFileBaseKey, " = ", base);
+                    format.ttl(LogFileBaseKey, " = ", base);
                     System.setProperty(LogFileBaseKey, logPath);
                     name = StrH.getAtomicNameFromPath(base);
                 }
@@ -469,13 +472,13 @@ public class CliBase extends Thread
         }else
         {
             logPath = commandline.getOptionValue(LoggerNameShortCl, DefaultLogPath);
-            StrH.ttl(initsb, 1, "--",LoggerNameLongCl, " = ", logPath);
+            format.ttl("--",LoggerNameLongCl, " = ", logPath);
             System.setProperty(LogFilePathKey, logPath);
             String base = logPath;
             int idx = logPath.lastIndexOf('.');
             if(idx != -1)
                 base = logPath.substring(0, idx);
-            StrH.ttl(initsb, 1, LogFileBaseKey, " = ", base);
+            format.ttl(LogFileBaseKey, " = ", base);
             System.setProperty(LogFileBaseKey, logPath);
             name = StrH.getAtomicNameFromPath(base);
         }

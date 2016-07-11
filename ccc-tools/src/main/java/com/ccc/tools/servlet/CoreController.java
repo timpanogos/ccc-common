@@ -18,10 +18,15 @@ package com.ccc.tools.servlet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.Callable;
 
+import org.slf4j.LoggerFactory;
+
+import com.ccc.tools.StrH;
 import com.ccc.tools.TabToLevel;
 import com.ccc.tools.app.status.StatusTracker;
 import com.ccc.tools.app.status.StatusTrackerProvider;
+import com.ccc.tools.da.DataAccessor;
 import com.ccc.tools.executor.BlockingExecutor;
 import com.ccc.tools.executor.PropertiesBlockingExecutorConfig;
 import com.ccc.tools.executor.PropertiesBlockingExecutorConfig.ExecutorConfig;
@@ -29,25 +34,37 @@ import com.ccc.tools.executor.PropertiesScheduledExecutorConfig;
 import com.ccc.tools.executor.PropertiesScheduledExecutorConfig.ScheduledExecutorConfig;
 import com.ccc.tools.executor.ScheduledExecutor;
 import com.ccc.tools.servlet.clientInfo.BaseClientInfo;
-import com.ccc.tools.servlet.events.AuthenticatedEvent;
-import com.ccc.tools.servlet.events.AuthenticatedEventListener;
+import com.ccc.tools.servlet.events.AuthEventListener;
 
 @SuppressWarnings("javadoc")
 public class CoreController
 {
+    private static CoreController controller;
     private volatile StatusTracker statusTracker;
     public volatile BlockingExecutor blockingExecutor;
     public volatile ScheduledExecutor scheduledExecutor;
     
-    private final List<AuthenticatedEventListener> authenticatedEventListeners; 
+    private final List<AuthEventListener> authenticatedEventListeners; 
+    protected volatile Properties properties;
+    protected volatile DataAccessor dataAccessor;
     
     public CoreController()
     {
-    	authenticatedEventListeners = new ArrayList<AuthenticatedEventListener>();
+    	authenticatedEventListeners = new ArrayList<AuthEventListener>();
     }
     
+    public static CoreController getController()
+    {
+        return controller;
+    }
+    
+    public Properties getProperties()
+    {
+        return properties;
+    }
+
     //TODO: decide if throwing exception on duplicates
-    public void registerAuthenticatedListener(AuthenticatedEventListener listener)
+    public void registerAuthenticatedEventListener(AuthEventListener listener)
     {
     	synchronized(authenticatedEventListeners)
     	{
@@ -55,7 +72,7 @@ public class CoreController
     	}
     }
     
-    public void deregisterAuthenticatedListener(AuthenticatedEventListener listener)
+    public void deregisterAuthenticatedEventListener(AuthEventListener listener)
     {
     	synchronized(authenticatedEventListeners)
     	{
@@ -63,32 +80,14 @@ public class CoreController
     	}
     }
     
-    public void fireAuthenticatedListeners(BaseClientInfo clientInfo, AuthenticatedEventListener.Type type)
+    public void fireAuthenticatedEvent(BaseClientInfo clientInfo, AuthEventListener.Type type)
     {
-    	synchronized(authenticatedEventListeners)
-    	{
-    		for(AuthenticatedEventListener listener : authenticatedEventListeners)
-    		{
-    			switch(type)
-    			{
-				case Authenticated:
-    				listener.authenticated(clientInfo);
-					break;
-				case Dropped:
-    				listener.dropped(clientInfo);
-					break;
-				case Refreshed:
-    				listener.refreshed(clientInfo);
-					break;
-				default:
-					break;
-    			}
-    		}
-    	}
+        blockingExecutor.submit(new FireAuthenticatedTask(clientInfo, type));
     }
     
     public void init(Properties properties, TabToLevel format) throws Exception
     {
+        this.properties = properties;
         statusTracker = new StatusTrackerProvider();
         blockingExecutor = new BlockingExecutor();
         ExecutorConfig beconfig = PropertiesBlockingExecutorConfig.propertiesToConfig(properties, statusTracker, format);
@@ -98,6 +97,16 @@ public class CoreController
         ScheduledExecutorConfig seconfig = PropertiesScheduledExecutorConfig.propertiesToConfig(properties, statusTracker, format);
         scheduledExecutor.init(seconfig);
         properties.put(OauthServlet.ScheduledExcecutorKey, scheduledExecutor);
+        
+        String daImplClass = StrH.getParameter(properties, DataAccessor.DaImplKey, null, format);
+
+        if(daImplClass != null)
+        {
+            Class<?> clazz = Class.forName(daImplClass);
+            dataAccessor = (DataAccessor) clazz.newInstance();
+            dataAccessor.init(properties);
+        }
+        controller = this;
     }
     
     public void destroy()
@@ -108,5 +117,49 @@ public class CoreController
             scheduledExecutor.shutdownNow();
         if(blockingExecutor != null)
             blockingExecutor.shutdownNow();
+    }
+
+    private class FireAuthenticatedTask implements Callable<Void>
+    {
+        private BaseClientInfo clientInfo;
+        private final AuthEventListener.Type type;
+        
+        private FireAuthenticatedTask(BaseClientInfo clientInfo, AuthEventListener.Type type)
+        {
+            this.clientInfo = clientInfo;
+            this.type = type;
+        }
+        
+        @Override
+        public Void call() throws Exception
+        {
+            try
+            {
+            synchronized(authenticatedEventListeners)
+            {
+                for(AuthEventListener listener : authenticatedEventListeners)
+                {
+                    switch(type)
+                    {
+                    case Authenticated:
+                        listener.authenticated(clientInfo);
+                        break;
+                    case Dropped:
+                        listener.dropped(clientInfo);
+                        break;
+                    case Refreshed:
+                        listener.refreshed(clientInfo);
+                        break;
+                    default:
+                        break;
+                    }
+                }
+            }
+            }catch(Exception e)
+            {
+                LoggerFactory.getLogger(getClass()).warn("An authenticatedEventListener has thrown an exception", e);
+            }
+            return null;
+        }
     }
 }

@@ -17,16 +17,17 @@ package com.ccc.tools.servlet.login;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.slf4j.LoggerFactory;
 
-import com.ccc.tools.servlet.OauthServlet;
+import com.ccc.tools.servlet.CoreController;
 import com.ccc.tools.servlet.UserAuthenticationHandler;
 import com.ccc.tools.servlet.clientInfo.Base20ClientInfo;
 import com.ccc.tools.servlet.clientInfo.SessionClientInfo;
-import com.ccc.tools.servlet.events.AuthenticatedEventListener;
+import com.ccc.tools.servlet.events.AuthEventListener;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 
 @SuppressWarnings("javadoc")
@@ -39,6 +40,7 @@ public class Auth20Callback extends WebPage
     // what about multiple users? how to scale the refresh?
     // also need to cancel it in logout
     private Timer timer = new Timer();
+    private long expiresIn;
 
     /**
      * This method must be overridden.
@@ -60,20 +62,24 @@ public class Auth20Callback extends WebPage
         clientInfo.validateState();
         clientInfo.setAccessToken(handler.getAccessToken(clientInfo.getCode()));
         sessionClientInfo.setAuthenticated(true);
-        long expiresIn = ((OAuth2AccessToken) clientInfo.getAccessToken()).getExpiresIn();
+        expiresIn = ((OAuth2AccessToken) clientInfo.getAccessToken()).getExpiresIn();
         expiresIn *= 1000;
         expiresIn -= 60 * 1000; // give it 60 seconds pre-expire
-        timer.scheduleAtFixedRate(new RefreshTask(handler, clientInfo), expiresIn, expiresIn);
-        ((OauthServlet)getApplication()).getController().fireAuthenticatedListeners(clientInfo, AuthenticatedEventListener.Type.Authenticated);
+        timer.schedule(new RefreshTask(timer, handler, clientInfo), expiresIn);
     }
     
     private class RefreshTask extends TimerTask
     {
+        private final Timer timer;
+        private final AtomicBoolean inRetry;
         private final UserAuthenticationHandler handler;
         private final Base20ClientInfo clientInfo;
+        
 
-        private RefreshTask(UserAuthenticationHandler handler, Base20ClientInfo clientInfo)
+        private RefreshTask(Timer timer, UserAuthenticationHandler handler, Base20ClientInfo clientInfo)
         {
+            this.timer = timer;
+            inRetry = new AtomicBoolean();
             this.handler = handler;
             this.clientInfo = clientInfo;
         }
@@ -85,12 +91,13 @@ public class Auth20Callback extends WebPage
             {
 LoggerFactory.getLogger(getClass()).info("refresh accessToken attempt");                
                 clientInfo.setAccessToken(handler.refreshAccessToken(((OAuth2AccessToken) clientInfo.getAccessToken()).getRefreshToken()));
-                ((OauthServlet)getApplication()).getController().fireAuthenticatedListeners(clientInfo, AuthenticatedEventListener.Type.Refreshed);
+                timer.schedule(new RefreshTask(timer, handler, clientInfo), expiresIn);
+                CoreController.getController().fireAuthenticatedEvent(clientInfo, AuthEventListener.Type.Refreshed);
 LoggerFactory.getLogger(getClass()).info("refresh accessToken success");                
             } catch (Exception e)
             {
-                timer.cancel();
-                LoggerFactory.getLogger(getClass()).error("Refresh Access Token failed", e);
+                timer.schedule(new RefreshTask(timer, handler, clientInfo), 1000 * 60);
+                LoggerFactory.getLogger(getClass()).error("Refresh Access Token failed, retry in 1 minute", e);
             }
         }
     }

@@ -15,7 +15,14 @@
 */
 package com.ccc.tools.servlet.events;
 
+import com.ccc.tools.servlet.clientInfo.BaseClientInfo;
+
 @SuppressWarnings("javadoc")
-public interface Event
+public interface AuthEventListener extends EventListener
 {
+	public void authenticated(BaseClientInfo clientInfo);
+	public void refreshed(BaseClientInfo clientInfo);
+	public void dropped(BaseClientInfo clientInfo);
+	
+	public enum Type{Authenticated, Refreshed, Dropped}
 }

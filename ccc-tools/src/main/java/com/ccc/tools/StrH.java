@@ -16,6 +16,7 @@
 package com.ccc.tools;
 
 import java.util.Map.Entry;
+import java.util.Properties;
 
 
 @SuppressWarnings("javadoc")
@@ -24,40 +25,36 @@ public class StrH
     public final static char ForwardSlashSeperator = '/';
     public final static char BackSlashSeperator = '\\';
 
-    public static StringBuilder ttl(StringBuilder sb, int level, Object ... values)
+    public static String getParameter(Properties properties, String key, TabToLevel format) throws Exception
     {
-        Object[] array = new String[values.length];
-        for(int i=0; i < array.length; i++)
-            array[i] = (values[i] == null ? "null" : values[i].toString());
-        return tabToLevel(sb, level, true, array);
+        return getParameter(properties, key, null, format, true);
+    }
+    
+    public static String getParameter(Properties properties, String key, String defaultValue, TabToLevel format) throws Exception
+    {
+        return getParameter(properties, key, defaultValue, format, false);
+    }
+    
+    public static String getParameter(Properties properties, String key, String defaultValue, TabToLevel format, boolean required) throws Exception
+    {
+        String value = properties.getProperty(key);
+        if(value != null)
+        {
+            value = value.trim();
+            format.ttl(key, " = ", value);
+        }
+        else
+        {
+            if(required)
+                throw new Exception(key + " not specified in properties file");
+            if(defaultValue != null)
+                value = defaultValue.trim();
+            format.ttl(key, " = ", value, " (default injected)");
+        }
+        properties.remove(key);
+        return value;
     }
 
-    /**
-     * Tab to level.
-     *
-     * @param sb to add the values to
-     * @param level number of tabs
-     * @param eol add eol at end of values
-     * @param values list of values to add
-     * @return the string builder that has handed in.
-     */
-    public static StringBuilder tabToLevel(StringBuilder sb, int level, boolean eol, Object ... values)
-    {
-        for(int i=0; i < level; i++)
-            sb.append("\t");
-        for(int j=0; j < values.length; j++)
-        {
-            Object v = values[j];
-            if(v == null)
-                v = new String("null");
-            else
-                v = v.toString();
-            sb.append(v);
-        }
-        if(eol)
-            sb.append("\n");
-        return sb;
-    }
     
     public static String trim(String value)
     {

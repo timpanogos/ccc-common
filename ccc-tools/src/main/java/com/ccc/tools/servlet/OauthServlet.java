@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ccc.tools.PropertiesFile;
+import com.ccc.tools.StrH;
 import com.ccc.tools.TabToLevel;
 import com.ccc.tools.servlet.clientInfo.BaseClientInfo;
 import com.ccc.tools.servlet.login.SignIn20Page;
@@ -75,11 +76,6 @@ public abstract class OauthServlet extends AuthenticatedWebApplication
     	return coreController;
     }
     
-    public Properties getFileProperties()
-    {
-        return properties;
-    }
-
     abstract protected String getLogFilePathDefault();
     abstract protected String getOauthImplClassDefault();
     abstract protected String getCoreImplClassDefault();
@@ -129,46 +125,21 @@ public abstract class OauthServlet extends AuthenticatedWebApplication
         {
             PropertiesFile.load(properties, fileName);
 
-            String logfileIn = properties.getProperty(LogFilePathKey);
-            String logfile = getLogFilePathDefault();
-            if (logfileIn != null)
-                logfile = logfileIn;
-            else
-                logfileIn = "null";
-            format.ttl("logfile: ", logfile, " (", logfileIn, ")");
+            String logfile = StrH.getParameter(properties, LogFilePathKey, getLogFilePathDefault(), format);
             System.setProperty(LogFilePathKey, logfile);
-            
             int idx = logfile.lastIndexOf(".");
             System.setProperty(LogFileBaseKey, logfile.substring(0, idx));
             
-            String googleIn = properties.getProperty(GoogleCSEcxKey);
-            String google = GoogleCSEcxDefault;
-            if (googleIn != null)
-                google = googleIn;
-            else
-                googleIn = "null";
-            format.ttl(GoogleCSEcxKey, ": ", google, " (", googleIn, ")");
+            String google = StrH.getParameter(properties, GoogleCSEcxKey, GoogleCSEcxDefault, format);
             System.setProperty(GoogleCSEcxKey, google);
             
-            String copyrightYearIn = properties.getProperty(CopyrightYearKey);
-            String copyrightYear = CopyrightYearDefault;
-            if (copyrightYearIn != null)
-                copyrightYear = copyrightYearIn;
-            else
-                copyrightYearIn = "null";
-            format.ttl(CopyrightYearKey, ": ", copyrightYear, " (", copyrightYearIn, ")");
+            String copyrightYear = StrH.getParameter(properties, CopyrightYearKey, CopyrightYearDefault, format);
             System.setProperty(CopyrightYearKey, copyrightYear);
             
-            String copyrightOwnerIn = properties.getProperty(CopyrightOwnerKey);
-            String copyrightOwner = CopyrightOwnerDefault;
-            if (copyrightOwnerIn != null)
-                copyrightOwner = copyrightOwnerIn;
-            else
-                copyrightOwnerIn = "null";
-            format.ttl(CopyrightOwnerKey, ": ", copyrightOwner, " (", copyrightOwnerIn, ")");
+            String copyrightOwner = StrH.getParameter(properties, CopyrightOwnerKey, CopyrightOwnerDefault, format);
             System.setProperty(CopyrightOwnerKey, copyrightOwner);
 
-            String oauthImplClass = properties.getProperty(OauthImplClassKey, getOauthImplClassDefault());
+            String oauthImplClass = StrH.getParameter(properties, OauthImplClassKey, getOauthImplClassDefault(), format);
             msg = "Invalid OAuth implementation class, " + OauthImplClassKey + " = " + oauthImplClass; 
             Class<?> clazz = Class.forName(oauthImplClass);
             OauthUserAuthenticator authenticator = (OauthUserAuthenticator) clazz.newInstance();
@@ -177,7 +148,7 @@ public abstract class OauthServlet extends AuthenticatedWebApplication
             Class<? extends WebPage> cbclass = authenticator.getOAuthCallbackClass();
             mountPage(authenticator.getOAuthCallbackMount(), cbclass);
 
-            String coreImplClass = properties.getProperty(CoreImplClassKey, getCoreImplClassDefault());
+            String coreImplClass = StrH.getParameter(properties, CoreImplClassKey, getCoreImplClassDefault(), format);
             msg = "Invalid CoreController implementation class, " + CoreImplClassKey + " = " + coreImplClass;
             clazz = Class.forName(coreImplClass);
             coreController = (CoreController) clazz.newInstance();
@@ -186,15 +157,6 @@ public abstract class OauthServlet extends AuthenticatedWebApplication
 
             getServletContext().setAttribute(WicketPropertiesKey, properties);
 //            properties.setProperty(ContextRealBaseKey, contextPath);
-                        
-            properties.remove(ServletConfigKey);
-            properties.remove(LogFilePathKey);
-            properties.remove(LogFileBaseKey);
-            properties.remove(GoogleCSEcxKey);
-            properties.remove(CopyrightYearKey);
-            properties.remove(CopyrightOwnerKey);
-            properties.remove(OauthImplClassKey);
-            properties.remove(CoreImplClassKey);
             
             format.ttl("Other properties");
             format.inc();

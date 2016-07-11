@@ -126,8 +126,8 @@ public class RequestThrottle
                 format.inc();
                 format.ttl("realtimeCount was: ", realtimeCount.get());
                 format.ttl("sendtimeCount was: ", sendtimeCount.get());
-                realtimeCount.set(sendtimeCount.get());
-                sendtimeCount.set(0);
+//                realtimeCount.set(sendtimeCount.get());
+//                sendtimeCount.set(0);
                 format.ttl("realtimeCount: ", realtimeCount.get());
                 format.ttl("sendtimeCount: ", sendtimeCount.get());
                 format.ttl("returning");

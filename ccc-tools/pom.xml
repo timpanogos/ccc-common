@@ -9,7 +9,6 @@
 	<artifactId>ccc-tools</artifactId>
 	<packaging>jar</packaging>
 	<dependencies>
-	
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -29,6 +28,14 @@
 		<dependency>
 			<groupId>com.github.scribejava</groupId>
 			<artifactId>scribejava-core</artifactId>
+		</dependency>
+		<dependency> 
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>commons-cli</groupId>

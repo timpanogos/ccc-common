@@ -15,6 +15,7 @@
 */
 package com.ccc.tools.servlet.clientInfo;
 
+import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.model.Token;
 
@@ -29,7 +30,7 @@ public class Base20ClientInfo implements BaseClientInfo
     private String loginBaseUrl;    // from config
     private String loginUrl;        // totally filled out from scribejava
     private String tokenUrl;
-    private OAuthConfig oauthConfig;
+    private transient OAuthConfig oauthConfig;
     
     public Base20ClientInfo()
     {
@@ -67,11 +68,18 @@ public class Base20ClientInfo implements BaseClientInfo
         return accessToken;
     }
 
+    public synchronized String getRefreshToken()
+    {
+        if(accessToken == null)
+            return null;
+        return ((OAuth2AccessToken)accessToken).getRefreshToken();
+    }
+    
     public synchronized void setAccessToken(Token accessToken)
     {
         this.accessToken = accessToken;
     }
-
+    
     public synchronized String getLoginBaseUrl()
     {
         return loginBaseUrl;
