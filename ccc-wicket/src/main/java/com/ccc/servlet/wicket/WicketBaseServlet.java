@@ -22,11 +22,13 @@ import java.util.Properties;
 import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.protocol.http.WebSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ccc.oauth.CoreController;
 import com.ccc.oauth.clientInfo.BaseClientInfo;
+import com.ccc.oauth.clientInfo.SessionClientInfo;
 import com.ccc.servlet.wicket.login.SignInPage;
 import com.ccc.tools.PropertiesFile;
 import com.ccc.tools.StrH;
@@ -65,6 +67,11 @@ public abstract class WicketBaseServlet extends AuthenticatedWebApplication
         }
     }
     
+    public static BaseClientInfo getClientInfo()
+    {
+        return ((SessionClientInfo)WebSession.get().getClientInfo()).getOauthClientInfo();
+    }
+
     abstract protected String getLogFilePathDefault();
     abstract protected String getOauthImplClassDefault();
     abstract protected String getCoreImplClassDefault();
