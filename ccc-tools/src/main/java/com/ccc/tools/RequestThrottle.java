@@ -1,24 +1,22 @@
 /*
-**  Copyright (c) 2016, Cascade Computer Consulting.
-**
-**  Permission to use, copy, modify, and/or distribute this software for any
-**  purpose with or without fee is hereby granted, provided that the above
-**  copyright notice and this permission notice appear in all copies.
-**
-**  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-**  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-**  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-**  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-**  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-**  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-**  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-*/
+ **  Copyright (c) 2016, Cascade Computer Consulting.
+ **
+ **  Permission to use, copy, modify, and/or distribute this software for any
+ **  purpose with or without fee is hereby granted, provided that the above
+ **  copyright notice and this permission notice appear in all copies.
+ **
+ **  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ **  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ **  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ **  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ **  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.ccc.tools;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-
-import org.slf4j.LoggerFactory;
 
 /**
  * Requests Per Second Throttling class
@@ -44,7 +42,7 @@ public class RequestThrottle
     {
         this(maxPerSecond, IntervalType.Second, 1);
     }
-    
+
     /**
      * Partial Request Throttle constructor
      * @param maxPerInterval the maximum allowed requests per the declared interval
@@ -55,13 +53,13 @@ public class RequestThrottle
         this(maxPerInterval, type, 1);
     }
 
-    
+
     /**
      * Full Request Throttle constructor
-     * <p>Use the customScale to obtain the likes of 1 per 5 minutes (IntervalType.Minute, customScale = 5). 
+     * <p>Use the customScale to obtain the likes of 1 per 5 minutes (IntervalType.Minute, customScale = 5).
      * @param maxPerInterval the maximum allowed requests per interval
      * @param type the interval type.
-     * @param customScale value to be multiplied against the IntervalTypes scale. 
+     * @param customScale value to be multiplied against the IntervalTypes scale.
      */
     public RequestThrottle(int maxPerInterval, IntervalType type, int customScale)
     {
@@ -69,10 +67,10 @@ public class RequestThrottle
         realtimeCount = new AtomicInteger(0);
         sendtimeCount = new AtomicInteger(0);
         lastRealInterval = new AtomicLong(0);
-        this.maxPerInterval = maxPerInterval;
+        this.maxPerInterval = maxPerInterval - 1;
         lastAccess = new AtomicLong(0);
         this.customScale = customScale * type.scale;
-        lastRealtime = new AtomicLong(firstAccess.get() - (customScale * 2));
+        lastRealtime = new AtomicLong(firstAccess.get() - customScale * 2);
     }
 
     /**
@@ -83,8 +81,8 @@ public class RequestThrottle
         return lastAccess.get();
     }
 
-    
-    private AtomicInteger hits = new AtomicInteger();
+
+    private final AtomicInteger hits = new AtomicInteger();
     /**
      * wait for next interval if we are already at max.
      */
@@ -111,7 +109,7 @@ public class RequestThrottle
             sendtimeCount.set(0);
             realtimeCount.set(0);
             format.ttl("real time up two intervals, cleared counters and return");
-            LoggerFactory.getLogger(getClass()).info(format.toString());
+            //            LoggerFactory.getLogger(getClass()).info(format.toString());
             return;
         }
         format.ttl("another hit within the same realtime interval");
@@ -131,8 +129,8 @@ public class RequestThrottle
                 format.ttl("realtimeCount: ", realtimeCount.get());
                 format.ttl("sendtimeCount: ", sendtimeCount.get());
                 format.ttl("returning");
-                LoggerFactory.getLogger(getClass()).info(format.toString());
-//                return;
+                //                LoggerFactory.getLogger(getClass()).info(format.toString());
+                return;
             }
             format.ttl("realtime count < ", maxPerInterval, " continue to check sendtime processing");
             format.dec();
@@ -164,7 +162,7 @@ public class RequestThrottle
             t1 = System.currentTimeMillis();
             realInterval = t1 / customScale;
         }
-        LoggerFactory.getLogger(getClass()).info(format.toString());
+        //        LoggerFactory.getLogger(getClass()).info(format.toString());
     }
 
     @SuppressWarnings("javadoc")
