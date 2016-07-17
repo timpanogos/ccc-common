@@ -19,9 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
 
 import org.slf4j.LoggerFactory;
 
+import com.ccc.db.BaseDataAccessor;
 import com.ccc.db.DataAccessor;
 import com.ccc.oauth.clientInfo.BaseClientInfo;
 import com.ccc.oauth.events.AuthEventListener;
@@ -45,12 +47,12 @@ public class CoreController
     
     private static CoreController controller;
     private volatile StatusTracker statusTracker;
-    public volatile BlockingExecutor blockingExecutor;
+    public volatile ExecutorService executor;
     public volatile ScheduledExecutor scheduledExecutor;
     
     private final List<AuthEventListener> authenticatedEventListeners; 
     protected volatile Properties properties;
-    protected volatile DataAccessor dataAccessor;
+    protected volatile BaseDataAccessor dataAccessor;
     
     public CoreController()
     {
@@ -86,16 +88,16 @@ public class CoreController
     
     public void fireAuthenticatedEvent(BaseClientInfo clientInfo, AuthEventListener.Type type)
     {
-        blockingExecutor.submit(new FireAuthenticatedTask(clientInfo, type));
+        executor.submit(new FireAuthenticatedTask(clientInfo, type));
     }
     
     public void init(Properties properties, TabToLevel format) throws Exception
     {
         this.properties = properties;
         statusTracker = new StatusTrackerProvider();
-        blockingExecutor = new BlockingExecutor();
+        executor = new BlockingExecutor();
         ExecutorConfig beconfig = PropertiesBlockingExecutorConfig.propertiesToConfig(properties, statusTracker, format);
-        blockingExecutor.init(beconfig);
+        ((BlockingExecutor)executor).init(beconfig);
         scheduledExecutor = new ScheduledExecutor();
         ScheduledExecutorConfig seconfig = PropertiesScheduledExecutorConfig.propertiesToConfig(properties, statusTracker, format);
         scheduledExecutor.init(seconfig);
@@ -105,7 +107,7 @@ public class CoreController
         if(daImplClass != null)
         {
             Class<?> clazz = Class.forName(daImplClass);
-            dataAccessor = (DataAccessor) clazz.newInstance();
+            dataAccessor = (BaseDataAccessor) clazz.newInstance();
             dataAccessor.init(properties);
         }
         controller = this;
@@ -117,8 +119,8 @@ public class CoreController
             statusTracker.destroy();
         if(scheduledExecutor != null)
             scheduledExecutor.shutdownNow();
-        if(blockingExecutor != null)
-            blockingExecutor.shutdownNow();
+        if(executor != null)
+            executor.shutdownNow();
     }
 
     private class FireAuthenticatedTask implements Callable<Void>

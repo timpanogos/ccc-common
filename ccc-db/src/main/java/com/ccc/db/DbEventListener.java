@@ -15,23 +15,14 @@
 */
 package com.ccc.db;
 
-import java.util.Properties;
-import java.util.concurrent.ExecutorService;
+import java.util.EventListener;
 
 @SuppressWarnings("javadoc")
-public interface DataAccessor
+public interface DbEventListener extends EventListener
 {
-    public static String DaDataSourceTomcatKey = "ccc.tools.da.datasource.tomcat"; 
-    public static String DaImplKey = "ccc.tools.da.impl-class"; 
-    public static String DaUserKey = "ccc.tools.da.user"; 
-    public static String DaPassKey = "ccc.tools.da.password"; 
-    public static String DaHostKey = "ccc.tools.da.host"; 
-    public static String DaPortKey = "ccc.tools.da.port"; 
-    public static String DaDbNameKey = "ccc.tools.da.db-name"; 
-    public static String DaUrlPrefixKey = "ccc.tools.da.url-prefix"; 
-    
-    public void init(Properties properties) throws Exception;
-    public void setExecutor(ExecutorService executor) throws Exception;
-    public boolean isUp();
-    public void close();
+	public void dbUp();
+	public void dbDown();
+	
+	public enum Type{Up, Down}
 }
+ 

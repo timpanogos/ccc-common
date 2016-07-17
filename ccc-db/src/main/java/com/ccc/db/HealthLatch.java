@@ -15,23 +15,41 @@
 */
 package com.ccc.db;
 
-import java.util.Properties;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("javadoc")
-public interface DataAccessor
+public class HealthLatch
 {
-    public static String DaDataSourceTomcatKey = "ccc.tools.da.datasource.tomcat"; 
-    public static String DaImplKey = "ccc.tools.da.impl-class"; 
-    public static String DaUserKey = "ccc.tools.da.user"; 
-    public static String DaPassKey = "ccc.tools.da.password"; 
-    public static String DaHostKey = "ccc.tools.da.host"; 
-    public static String DaPortKey = "ccc.tools.da.port"; 
-    public static String DaDbNameKey = "ccc.tools.da.db-name"; 
-    public static String DaUrlPrefixKey = "ccc.tools.da.url-prefix"; 
+    private final AtomicBoolean dbUp;
+    public HealthLatch()
+    {
+        dbUp = new AtomicBoolean(false);
+    }
     
-    public void init(Properties properties) throws Exception;
-    public void setExecutor(ExecutorService executor) throws Exception;
-    public boolean isUp();
-    public void close();
+    public boolean shouldFire(DbEventListener.Type type)
+    {
+        switch(type)
+        {
+            case Up:
+                if(dbUp.get())
+                    return false;
+                dbUp.set(true);
+                return true;
+            case Down:
+                if(!dbUp.get())
+                    return false;
+                dbUp.set(false);
+                return true;
+            default:
+                LoggerFactory.getLogger(getClass()).warn("Unknown DbEventListener.Type: " + type);
+                return true;
+        }
+    }
+    
+    public boolean isUp()
+    {
+        return dbUp.get();
+    }
 }

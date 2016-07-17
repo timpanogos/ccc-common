@@ -15,14 +15,15 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ccc.db.DataAccessor;
+import com.ccc.db.BaseDataAccessor;
+import com.ccc.db.DbEventListener;
 import com.ccc.tools.StrH;
 import com.ccc.tools.TabToLevel;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @SuppressWarnings("javadoc")
-public class PgBaseDataAccessor implements DataAccessor
+public class PgBaseDataAccessor extends BaseDataAccessor
 {
     public static final String JdbcDriverKey = "ccc.tools.da.jdbc-driver";
     public static final String NonServletKey = "ccc.tools.da.non-servlet";
@@ -113,14 +114,15 @@ public class PgBaseDataAccessor implements DataAccessor
     {
         try
         {
-            dsource.getConnection().isValid(10000);
+            dsource.getConnection().isValid(1000);
+            fireDbEvent(DbEventListener.Type.Up);
             return true;
         } catch (SQLException e)
         {
+            fireDbEvent(DbEventListener.Type.Up);
             return false;
         }
     }
-    
     
     @Override
     public void close()
