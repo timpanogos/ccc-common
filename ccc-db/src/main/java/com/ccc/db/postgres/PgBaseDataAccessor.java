@@ -27,16 +27,16 @@ public class PgBaseDataAccessor extends BaseDataAccessor
 {
     public static final String JdbcDriverKey = "ccc.tools.da.jdbc-driver";
     public static final String NonServletKey = "ccc.tools.da.non-servlet";
-    
+
 //    public static final String JdbcDriverDefault = "com.mysql.jdbc.Driver";
     public static final String JdbcDriverDefault = "org.postgresql.Driver";
-    public static String DaPortDefault = "5432"; 
+    public static String DaPortDefault = "5432";
     public static final String NonServletDefault = "false";
-    public static String DaUrlPrefixDefault = "jdbc:postgresql://"; 
+    public static String DaUrlPrefixDefault = "jdbc:postgresql://";
     public static final String TomcatJndiDsNamePrefix = "java:comp/env/";
 
     private static final AtomicInteger totalConnections = new AtomicInteger();
-    private static final Hashtable<Connection, AtomicInteger> connections = new Hashtable<Connection, AtomicInteger>();
+    private static final Hashtable<Connection, AtomicInteger> connections = new Hashtable<>();
 
     protected final Logger log;
     protected final AtomicBoolean dsIsMine;
@@ -49,7 +49,7 @@ public class PgBaseDataAccessor extends BaseDataAccessor
     }
 
     /* ****************************************************************************
-     * DataAccessor implementation    
+     * DataAccessor implementation
     ******************************************************************************/
     @Override
     public void init(Properties properties) throws Exception
@@ -67,13 +67,13 @@ public class PgBaseDataAccessor extends BaseDataAccessor
             String host = StrH.getParameter(properties, DaHostKey, format);
             String port = StrH.getParameter(properties, DaPortKey, DaPortDefault, format);
             String urlPrefix = StrH.getParameter(properties, DaUrlPrefixKey, DaUrlPrefixDefault, format);
-            
+
             try
             {
                 HikariConfig config = new HikariConfig();
                 String url = urlPrefix + host + ":" + port +"/" + dbName + "?characterEncoding=UTF-8";
                 config.setJdbcUrl(url);
-                config.setUsername(user); 
+                config.setUsername(user);
                 config.setPassword(pass);
                 config.addDataSourceProperty("cachePrepStmts", "true");
                 config.addDataSourceProperty("prepStmtCacheSize", "250");
@@ -92,7 +92,7 @@ public class PgBaseDataAccessor extends BaseDataAccessor
         InitialContext ctx = null;
         ctx = new InitialContext();
         String datasourceName = StrH.getParameter(properties, DaDataSourceTomcatKey, format);
-        datasourceName = TomcatJndiDsNamePrefix + datasourceName;
+//        datasourceName = TomcatJndiDsNamePrefix + datasourceName;
         format.ttl("full context name: " + datasourceName);
         dsource = (DataSource) ctx.lookup(datasourceName);
         if (dsource == null)
@@ -123,15 +123,13 @@ public class PgBaseDataAccessor extends BaseDataAccessor
             return false;
         }
     }
-    
+
     @Override
     public void close()
     {
         if (dsIsMine.get())
-        {
             if(dsource != null)
                 ((HikariDataSource) dsource).close();
-        }
     }
 
     public static Connection getConnection() throws SQLException
@@ -147,7 +145,7 @@ public class PgBaseDataAccessor extends BaseDataAccessor
         totalConnections.incrementAndGet();
         return conn;
     }
-    
+
     public static void close(Connection connection, Statement stmt, ResultSet rs, boolean closeConn) throws SQLException
     {
         try

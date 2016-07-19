@@ -12,9 +12,9 @@
 	<packaging>pom</packaging>
 	<name>CCC common repository Builder</name>
 	<modules>
-		<module>ccc-tools</module>
 		<module>ccc-db</module>
 		<module>ccc-oauth</module>
+		<module>ccc-tools</module>
 		<module>ccc-wicket</module>
 	</modules>
 </project>
