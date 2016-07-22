@@ -94,12 +94,14 @@ public class PgBaseDataAccessor extends BaseDataAccessor
         String datasourceName = StrH.getParameter(properties, DaDataSourceTomcatKey, format);
 //        datasourceName = TomcatJndiDsNamePrefix + datasourceName;
         format.ttl("full context name: " + datasourceName);
-        dsource = (DataSource) ctx.lookup(datasourceName);
-        if (dsource == null)
+        try
         {
-            String msg = "failed to obtain the DataSource: " + datasourceName;
-            log.error(msg);
-            throw new Exception(msg);
+            dsource = (DataSource) ctx.lookup(datasourceName);
+        }catch(Exception e)
+        {
+            format.ttl("failed to obtain the DataSource: ", datasourceName);
+            log.error(format.toString());
+            throw e;
         }
         format.ttl("DataSource class: ", dsource.getClass().getName());
         log.info(format.toString());

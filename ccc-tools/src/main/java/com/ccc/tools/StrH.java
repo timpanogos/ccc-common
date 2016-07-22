@@ -186,6 +186,16 @@ public class StrH
         return separator + value;
     }
     
+    public static String insureTailingSeparator(String value, char separator)
+    {
+        if(value == null || value.length() == 0)
+            return value;
+        value = value.trim();
+        if(value.charAt(value.length()-1) == separator)
+            return value;
+        return value += separator;
+    }
+    
     public static class StringPair implements Entry<String, String>
     {
         private final String key;

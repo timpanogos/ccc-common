@@ -40,6 +40,17 @@ import ch.qos.logback.core.util.StatusPrinter;
 @SuppressWarnings("javadoc")
 public abstract class WicketBaseServlet extends AuthenticatedWebApplication
 {
+    static
+    {
+        String logfile = System.getProperty("CATALINA_BASE", "/var/opt/ccc/crest");
+        StrH.insureTailingSeparator(logfile, '/');
+        logfile += "logs/crestj.log";
+        System.setProperty(CoreController.LogFilePathKey, logfile);
+        int idx = logfile.lastIndexOf(".");
+        System.setProperty(CoreController.LogFileBaseKey, logfile.substring(0, idx));
+        LoggerFactory.getLogger(WicketBaseServlet.class);
+    }
+
     public static final String ServletConfigKey = "ccc.tools.servlet.config";
     public static final String CopyrightYearKey = "ccc.tools.servlet.copyright-year";
     public static final String CopyrightOwnerKey = "ccc.tools.servlet.copyright-owner";
@@ -52,19 +63,12 @@ public abstract class WicketBaseServlet extends AuthenticatedWebApplication
     public static final String  GoogleCSEcxKey = "ccc.tools.servlet.gcse.cx";
     public static final String GoogleCSEcxDefault = "";
     
-    protected final Logger log;
+    protected volatile Logger log;
     protected volatile String contextPath;
     protected volatile Properties properties;
     
     public WicketBaseServlet()
     {
-        log = LoggerFactory.getLogger(getClass());
-        if(log.isInfoEnabled())
-        {
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            // TODO: StatusPrinter.setPrintStream
-            StatusPrinter.print(lc);
-        }
     }
     
     public static BaseClientInfo getClientInfo()
@@ -121,10 +125,18 @@ public abstract class WicketBaseServlet extends AuthenticatedWebApplication
         {
             PropertiesFile.load(properties, fileName);
 
-            String logfile = StrH.getParameter(properties, CoreController.LogFilePathKey, getLogFilePathDefault(), format);
-            System.setProperty(CoreController.LogFilePathKey, logfile);
-            int idx = logfile.lastIndexOf(".");
-            System.setProperty(CoreController.LogFileBaseKey, logfile.substring(0, idx));
+//            String logfile = StrH.getParameter(properties, CoreController.LogFilePathKey, getLogFilePathDefault(), format);
+//            System.setProperty(CoreController.LogFilePathKey, logfile);
+//            int idx = logfile.lastIndexOf(".");
+//            System.setProperty(CoreController.LogFileBaseKey, logfile.substring(0, idx));
+            log = LoggerFactory.getLogger(getClass());
+            if(log.isInfoEnabled())
+            {
+                LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+                // TODO: StatusPrinter.setPrintStream
+                StatusPrinter.print(lc);
+            }
+            
             
             String coreImplClass = StrH.getParameter(properties, CoreImplClassKey, getCoreImplClassDefault(), format);
             msg = "Invalid CoreController implementation class, " + CoreImplClassKey + " = " + coreImplClass;
