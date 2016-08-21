@@ -15,6 +15,7 @@
 */
 package com.ccc.oauth.clientInfo;
 
+import com.ccc.tools.TabToLevel;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.model.Token;
@@ -119,5 +120,45 @@ public class Base20ClientInfo implements BaseClientInfo
     {
         this.state = state;
     }
+
+    @Override
+    public String toString()
+    {
+        TabToLevel format = new TabToLevel();
+        return toString(format).toString();
+    }
     
+    public TabToLevel toString(TabToLevel format)
+    {
+        format.ttl("Base20ClientInfo");
+        format.inc();
+        format.ttl("code: ", code);
+        format.ttl("state: ", state);
+        format.ttl("accessToken: ", accessToken);
+        format.ttl("loginBaseUrl: ", loginBaseUrl);
+        format.ttl("loginUrl: ", loginUrl);
+        format.ttl("tokenUrl: ", tokenUrl);
+        format.ttl("oauthConfig:");
+        format.inc();
+        if(oauthConfig == null)
+        {
+            format.ttl("null");
+            format.dec();
+            format.dec();
+            return format;
+        }
+        format.ttl("apiKey: ", oauthConfig.getApiKey());
+        format.ttl("apiSecret: ", oauthConfig.getApiSecret());
+        format.ttl("callback: ", oauthConfig.getCallback());
+        format.ttl("signatureType: ", oauthConfig.getSignatureType());
+        format.ttl("scope: ", oauthConfig.getScope());
+        format.ttl("grantType: ", oauthConfig.getGrantType());
+        format.ttl("connectTimeout: ", oauthConfig.getConnectTimeout());
+        format.ttl("readTimeout: ", oauthConfig.getReadTimeout());
+        format.ttl("state: ", oauthConfig.getState());
+        format.ttl("responseType: ", oauthConfig.getResponseType());
+        format.dec();
+        format.dec();
+        return format;
+    }
 }
