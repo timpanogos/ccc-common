@@ -35,21 +35,29 @@ import com.ccc.tools.StrH;
 import com.ccc.tools.TabToLevel;
 
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.util.StatusPrinter;
 
 @SuppressWarnings("javadoc")
 public abstract class WicketBaseServlet extends AuthenticatedWebApplication
 {
-    static
-    {
-        String logfile = System.getProperty("CATALINA_BASE", "/var/opt/ccc/crest");
-        StrH.insureTailingSeparator(logfile, '/');
-        logfile += "logs/crestj.log";
-        System.setProperty(CoreController.LogFilePathKey, logfile);
-        int idx = logfile.lastIndexOf(".");
-        System.setProperty(CoreController.LogFileBaseKey, logfile.substring(0, idx));
-        LoggerFactory.getLogger(WicketBaseServlet.class);
-    }
+    //    public static final Logger log;
+    //    static
+    //    {
+    //        String logfile = System.getProperty(CoreController.LogFilePathKey, "/var/opt/ccc/crestj");
+    //        logfile = StrH.insureTailingSeparator(logfile, '/');
+    //        logfile += "logs/crestj.log";
+    //        System.setProperty(CoreController.LogFilePathKey, logfile);
+    //        int idx = logfile.lastIndexOf(".");
+    //        System.setProperty(CoreController.LogFileBaseKey, logfile.substring(0, idx));
+    //        log = LoggerFactory.getLogger(WicketBaseServlet.class);
+    //        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    //        StatusPrinter.print(lc);
+    //        log.info(CoreController.LogFilePathKey + " = " + logfile);
+    //        log.info(CoreController.LogFileBaseKey + " = " + logfile.substring(0, idx));
+    //
+    ////        .info(CoreController.LogFilePathKey+ " = " + logfile);
+    //    }
 
     public static final String ServletConfigKey = "ccc.tools.servlet.config";
     public static final String CopyrightYearKey = "ccc.tools.servlet.copyright-year";
@@ -60,31 +68,40 @@ public abstract class WicketBaseServlet extends AuthenticatedWebApplication
     public static final String CopyrightYearDefault = Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
     public static final String CopyrightOwnerDefault = "";
 
-    public static final String  GoogleCSEcxKey = "ccc.tools.servlet.gcse.cx";
+    public static final String GoogleCSEcxKey = "ccc.tools.servlet.gcse.cx";
     public static final String GoogleCSEcxDefault = "";
-    
+
     protected volatile Logger log;
     protected volatile String contextPath;
     protected volatile Properties properties;
-    
+
     public WicketBaseServlet()
     {
     }
-    
+
     public static BaseClientInfo getClientInfo()
     {
-        return ((SessionClientInfo)WebSession.get().getClientInfo()).getOauthClientInfo();
+        return ((SessionClientInfo) WebSession.get().getClientInfo()).getOauthClientInfo();
     }
 
     abstract protected String getLogFilePathDefault();
+
+    abstract protected String getLogConfigFilePath();
+
     abstract protected String getOauthImplClassDefault();
+
     abstract protected String getCoreImplClassDefault();
+
     abstract protected String getServletConfigDefault();
+
     abstract protected void init(TabToLevel sb);
+
     abstract protected Class<? extends AbstractAuthenticatedWebSession> getWebSessionImplClass();
+
     abstract protected Class<? extends WebPage> getSignInPageImplClass();
+
     abstract protected BaseClientInfo getBaseClientInfo();
-   
+
     @Override
     protected Class<? extends AbstractAuthenticatedWebSession> getWebSessionClass()
     {
@@ -96,21 +113,20 @@ public abstract class WicketBaseServlet extends AuthenticatedWebApplication
     {
         return SignInPage.class;
     }
-    
-    
+
     @Override
     public void init()
     {
         super.init();
         getDebugSettings().setAjaxDebugModeEnabled(false);
-                
+
         contextPath = getServletContext().getRealPath("/");
         TabToLevel format = new TabToLevel();
         format.ttl("\n", getClass().getSimpleName(), ".init");
         format.inc();
         format.ttl("applicationKey: ", getApplicationKey());
         format.ttl("context path: ", contextPath);
-        
+
         String fileNameIn = getInitParameter(ServletConfigKey);
         String fileName = getServletConfigDefault();
         if (fileNameIn != null)
@@ -124,20 +140,24 @@ public abstract class WicketBaseServlet extends AuthenticatedWebApplication
         try
         {
             PropertiesFile.load(properties, fileName);
-
-//            String logfile = StrH.getParameter(properties, CoreController.LogFilePathKey, getLogFilePathDefault(), format);
-//            System.setProperty(CoreController.LogFilePathKey, logfile);
-//            int idx = logfile.lastIndexOf(".");
-//            System.setProperty(CoreController.LogFileBaseKey, logfile.substring(0, idx));
+            // setup logging
+            LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+            JoranConfigurator configurator = new JoranConfigurator();
+            configurator.setContext(context);
+            context.reset();
+            String logfile = StrH.getParameter(properties, CoreController.LogFilePathKey, getLogFilePathDefault(), format);
+            System.setProperty(CoreController.LogFilePathKey, logfile);
+            int idx = logfile.lastIndexOf(".");
+            System.setProperty(CoreController.LogFileBaseKey, logfile.substring(0, idx));
+            configurator.doConfigure(getLogConfigFilePath());
+            StatusPrinter.printInCaseOfErrorsOrWarnings(context);
             log = LoggerFactory.getLogger(getClass());
-            if(log.isInfoEnabled())
+            if(log.isDebugEnabled())
             {
                 LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-                // TODO: StatusPrinter.setPrintStream
                 StatusPrinter.print(lc);
             }
-            
-            
+
             String coreImplClass = StrH.getParameter(properties, CoreImplClassKey, getCoreImplClassDefault(), format);
             msg = "Invalid CoreController implementation class, " + CoreImplClassKey + " = " + coreImplClass;
             Class<?> clazz = Class.forName(coreImplClass);
@@ -147,19 +167,19 @@ public abstract class WicketBaseServlet extends AuthenticatedWebApplication
 
             String google = StrH.getParameter(properties, GoogleCSEcxKey, GoogleCSEcxDefault, format);
             System.setProperty(GoogleCSEcxKey, google);
-            
-            String copyrightYear = StrH.getParameter(properties, CopyrightYearKey, CopyrightYearDefault, format);
-            System.setProperty(CopyrightYearKey, copyrightYear);
-            
-            String copyrightOwner = StrH.getParameter(properties, CopyrightOwnerKey, CopyrightOwnerDefault, format);
-            System.setProperty(CopyrightOwnerKey, copyrightOwner);
+
+//            String copyrightYear = StrH.getParameter(properties, CopyrightYearKey, CopyrightYearDefault, format);
+//            System.setProperty(CopyrightYearKey, copyrightYear);
+//
+//            String copyrightOwner = StrH.getParameter(properties, CopyrightOwnerKey, CopyrightOwnerDefault, format);
+//            System.setProperty(CopyrightOwnerKey, copyrightOwner);
 
             String oauthImplClass = StrH.getParameter(properties, OauthImplClassKey, getOauthImplClassDefault(), format);
-            msg = "Invalid OAuth implementation class, " + OauthImplClassKey + " = " + oauthImplClass; 
+            msg = "Invalid OAuth implementation class, " + OauthImplClassKey + " = " + oauthImplClass;
             clazz = Class.forName(oauthImplClass);
             WicketUserAuthenticator authenticator = (WicketUserAuthenticator) clazz.newInstance();
             authenticator.init(properties);
-            
+
             Class<? extends WebPage> cbclass = authenticator.getOAuthCallbackClass();
             mountPage(authenticator.getOAuthCallbackMount(), cbclass);
 
@@ -171,25 +191,24 @@ public abstract class WicketBaseServlet extends AuthenticatedWebApplication
         } catch (Exception e)
         {
             format.ttl("\n\n" + msg);
-            log.error(format.toString().toString(), e);
+            if (log != null)
+                log.error(format.toString(), e);
             throw new RuntimeException(msg, e);
         }
         init(format); // call log.info(sb.toString()) in this implementation
-	}
+    }
 
     @Override
     protected void onDestroy()
     {
         CoreController controller = CoreController.getController();
-        if(controller != null)
-        {
+        if (controller != null)
             try
             {
                 controller.destroy();
-            }catch(Exception e)
+            } catch (Exception e)
             {
                 log.warn("CoreController.destroy failed to cleanup", e);
             }
-        }
     }
 }

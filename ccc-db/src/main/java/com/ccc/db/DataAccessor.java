@@ -21,15 +21,16 @@ import java.util.concurrent.ExecutorService;
 @SuppressWarnings("javadoc")
 public interface DataAccessor
 {
-    public static String DaDataSourceTomcatKey = "ccc.tools.da.datasource.tomcat"; 
-    public static String DaImplKey = "ccc.tools.da.impl-class"; 
-    public static String DaUserKey = "ccc.tools.da.user"; 
-    public static String DaPassKey = "ccc.tools.da.password"; 
-    public static String DaHostKey = "ccc.tools.da.host"; 
-    public static String DaPortKey = "ccc.tools.da.port"; 
-    public static String DaDbNameKey = "ccc.tools.da.db-name"; 
-    public static String DaUrlPrefixKey = "ccc.tools.da.url-prefix"; 
-    
+    public static String DaDataSourceTomcatKey = "ccc.tools.da.datasource.tomcat";
+    public static String DaImplKey = "ccc.tools.da.impl-class";
+    public static String DaUserKey = "ccc.tools.da.user";
+    public static String DaPassKey = "ccc.tools.da.password";
+    public static String DaHostKey = "ccc.tools.da.host";
+    public static String DaPortKey = "ccc.tools.da.port";
+    public static String DaDbNameKey = "ccc.tools.da.db-name";
+    public static String DaUrlPrefixKey = "ccc.tools.da.url-prefix";
+    public static String DaUrlKey = "ccc.tools.da.url";
+
     public void init(Properties properties) throws Exception;
     public void setExecutor(ExecutorService executor) throws Exception;
     public boolean isUp();

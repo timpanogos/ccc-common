@@ -72,6 +72,7 @@ public class PgBaseDataAccessor extends BaseDataAccessor
             {
                 HikariConfig config = new HikariConfig();
                 String url = urlPrefix + host + ":" + port +"/" + dbName + "?characterEncoding=UTF-8";
+                url = StrH.getParameter(properties, DaUrlKey, url, format, false);
                 config.setJdbcUrl(url);
                 config.setUsername(user);
                 config.setPassword(pass);
