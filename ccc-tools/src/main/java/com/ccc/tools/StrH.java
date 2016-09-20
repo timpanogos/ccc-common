@@ -2,8 +2,8 @@
 **  Copyright (c) 2016, Chad Adams.
 **
 **  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU Lesser General Public License as 
-**  published by the Free Software Foundation, either version 3 of the 
+**  it under the terms of the GNU Lesser General Public License as
+**  published by the Free Software Foundation, either version 3 of the
 **  License, or any later version.
 **
 **  This program is distributed in the hope that it will be useful,
@@ -29,12 +29,12 @@ public class StrH
     {
         return getParameter(properties, key, null, format, true);
     }
-    
+
     public static String getParameter(Properties properties, String key, String defaultValue, TabToLevel format) throws Exception
     {
         return getParameter(properties, key, defaultValue, format, false);
     }
-    
+
     public static String getParameter(Properties properties, String key, String defaultValue, TabToLevel format, boolean required) throws Exception
     {
         String value = properties.getProperty(key);
@@ -57,19 +57,19 @@ public class StrH
         return value;
     }
 
-    
+
     public static String trim(String value)
     {
         if(value == null)
             return value;
         return value.trim();
     }
-    
+
     /**
      * Pad string to width and add to StringBuilder.
      *
      * @param sb to add newValue to
-     * @param newValue the newValue to be padded. 
+     * @param newValue the newValue to be padded.
      * @param length desired length of newValue
      * @return the input sb if it was not null, otherwise one was provided.
      */
@@ -87,7 +87,7 @@ public class StrH
             sb.append(" ");
         return sb;
     }
-    
+
     /**
      * Gets the atomic name from a character separated full name.
      *
@@ -105,7 +105,7 @@ public class StrH
             return name;
         return name.substring(++index);
     }
-    
+
     /**
      * Gets the penultimate name.
      *
@@ -121,9 +121,9 @@ public class StrH
         int index = name.lastIndexOf(seperator);
         if (index == -1)
             return null;
-        return (name.substring(0, index));
+        return name.substring(0, index);
     }
-    
+
     /**
      * Gets the atomic name from a file system path
      * @param name the name
@@ -143,9 +143,9 @@ public class StrH
             return name;
 
         ++index;
-        return (name.substring(index));
+        return name.substring(index);
     }
-    
+
     /**
      * Gets the penultimate name from a file system path.
      * @param name the name
@@ -162,21 +162,23 @@ public class StrH
         if (index == -1)
             return null;
 
-        return (name.substring(0, index));
+        return name.substring(0, index);
     }
-    
-    public static String stripTrailingSeparator(String value)
+
+    public static String stripTrailingSeparator(String value, char separator)
     {
         if(value == null || value.length() == 0)
             return value;
         value = value.trim();
-        if(value.charAt(value.length() - 1) == '/')
-            value = value.substring(0, value.length() - 1);
-        if(value.charAt(value.length() - 1) == '\\')
-            value = value.substring(0, value.length() - 1);
+        do
+            if(value.charAt(value.length() - 1) == separator)
+                value = value.substring(0, value.length() - 1);
+            else
+                break;
+        while(true);
         return value;
     }
-    
+
     public static String insureLeadingSeparator(String value, char separator)
     {
         if(value == null || value.length() == 0)
@@ -186,7 +188,7 @@ public class StrH
             return value;
         return separator + value;
     }
-    
+
     public static String insureTailingSeparator(String value, char separator)
     {
         if(value == null || value.length() == 0)
@@ -196,18 +198,30 @@ public class StrH
             return value;
         return value += separator;
     }
-    
+
+    public static String combinePathSegments(String seg1, String seg2, char separator)
+    {
+        if(seg2 == null)
+            return seg1;
+        if(seg2.length() == 0)
+            return seg1;
+        seg1 = stripTrailingSeparator(seg1, separator);
+        seg2 = insureLeadingSeparator(seg2, separator);
+        seg2 = insureTailingSeparator(seg2, separator);
+        return seg1 + seg2;
+    }
+
     public static class StringPair implements Entry<String, String>
     {
         private final String key;
         private String value;
-        
+
         public StringPair(Entry<Object, Object> entry)
         {
             key = (String) entry.getKey();
             value = (String) entry.getValue();
         }
-        
+
         @Override
         public String setValue(String value)
         {
@@ -227,11 +241,11 @@ public class StrH
         {
             return value;
         }
-        
+
         @Override
         public String toString()
         {
-            return key+"="+value; 
+            return key+"="+value;
         }
     }
 }
